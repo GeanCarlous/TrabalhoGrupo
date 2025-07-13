@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import './LoginPage.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
-export default function LoginPage({ onCadastrar }) {
+export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [error, setError] = useState('');
@@ -12,7 +12,6 @@ export default function LoginPage({ onCadastrar }) {
     e.preventDefault(); // Impede o recarregamento da página
     setError(''); // Limpa mensagens de erro anteriores
 
-    // Simulação de autenticação com localStorage (substitua pela sua lógica real)
     const storedEmail = localStorage.getItem('user_email');
     const storedPassword = localStorage.getItem('user_password');
 
@@ -56,15 +55,7 @@ export default function LoginPage({ onCadastrar }) {
         </form>
         <div className="signup-link">
           não tem uma conta?{' '}
-          <a
-            href="#"
-            onClick={e => {
-              e.preventDefault();
-              onCadastrar && onCadastrar();
-            }}
-          >
-            Cadastrar-se
-          </a>
+          <Link to="/cadastro">Cadastrar-se</Link>
         </div>
       </div>
     </div>
