@@ -8,19 +8,31 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
-    e.preventDefault(); // Impede o recarregamento da página
-    setError(''); // Limpa mensagens de erro anteriores
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError('');
 
-    const storedEmail = localStorage.getItem('user_email');
-    const storedPassword = localStorage.getItem('user_password');
+    try {
+      const response = await fetch('http://localhost:5000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password: senha }),
+      });
 
-    if (email === storedEmail && senha === storedPassword) {
-      // Login bem-sucedido: redireciona para a HomePage
-      navigate('/home');
-    } else {
-      // Credenciais inválidas: exibe uma mensagem de erro
-      setError('Email ou senha incorretos.');
+      const data = await response.json();
+
+      if (response.ok) {
+        // Salvar token no localStorage
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        navigate('/home');
+      } else {
+        setError(data.error || 'Erro ao fazer login');
+      }
+    } catch (error) {
+      setError('Erro de conexão com o servidor');
     }
   };
 
@@ -29,7 +41,7 @@ export default function LoginPage() {
       <div className="login-card">
         <h2>Faça login.</h2>
         {error && <p className="error-message">{error}</p>}
-        <form onSubmit={handleLogin}>  {/* Adiciona o onSubmit */}
+        <form onSubmit={handleLogin}>
           <label>Digite seu email institucional</label>
           <div className="input-group">
             <input
