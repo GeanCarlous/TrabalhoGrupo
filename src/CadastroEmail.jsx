@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import './LoginPage.css';
-//import HomePage from './HomePage';
 
 export default function CadastroEmail({ onNext }) {
   const [email, setEmail] = useState('');
   const [touched, setTouched] = useState(false);
 
-  // Exemplo: email institucional termina com ".edu" (ajuste para seu domínio real)
+  // Validação para email institucional da UFC
   const isValidEmail = email =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.endsWith('alu.ufc.br');
 
@@ -22,10 +21,11 @@ export default function CadastroEmail({ onNext }) {
         <div className="input-group" style={{ width: '100%', marginBottom: 8 }}>
           <input
             type="email"
-            placeholder="Email institucional"
+            placeholder="seu.nome@alu.ufc.br"
             value={email}
             onChange={e => setEmail(e.target.value)}
             onBlur={() => setTouched(true)}
+            onKeyPress={e => e.key === 'Enter' && isValidEmail(email) && onNext(email)}
             style={{
               background: '#f7f7f7',
               border: 'none',
@@ -42,7 +42,7 @@ export default function CadastroEmail({ onNext }) {
         </div>
         {showError && (
           <div style={{ color: '#e53935', fontSize: 14, textAlign: 'left', width: '100%', marginBottom: 8 }}>
-            Email institucional inválido.
+            Email institucional deve terminar com @alu.ufc.br
           </div>
         )}
         <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
@@ -51,7 +51,7 @@ export default function CadastroEmail({ onNext }) {
             onClick={() => isValidEmail(email) && onNext(email)}
             type="button"
             style={{
-              background: '#2563eb',
+              background: isValidEmail(email) ? '#2563eb' : '#ccc',
               color: '#fff',
               border: 'none',
               width: 56,
@@ -63,6 +63,7 @@ export default function CadastroEmail({ onNext }) {
               justifyContent: 'center',
               boxShadow: '0 2px 8px rgba(0,0,0,0.10)',
               marginLeft: 0,
+              cursor: isValidEmail(email) ? 'pointer' : 'not-allowed'
             }}
             disabled={!isValidEmail(email)}
             aria-label="Avançar"

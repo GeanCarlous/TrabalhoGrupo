@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+*/node_modules/
 
 # testing
 /coverage
@@ -21,3 +22,38 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Backend specific
+backend/*.sqlite
+backend/*.sqlite3
+backend/*.db
+backend/database.sqlite
+backend/database.db
+backend/.env
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+temp/
+.tmp/
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Optional directories
+.nyc_output
+.cache
+.parcel-cache

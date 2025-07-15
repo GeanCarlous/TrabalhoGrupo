@@ -25,6 +25,10 @@ function App() {
           path="/home"
           element={<HomePage />}
         />
+        <Route
+          path="/login"
+          element={<LoginPage />}
+        />
       </Routes>
     </BrowserRouter>
   );
