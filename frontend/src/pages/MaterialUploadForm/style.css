@@ -1,0 +1,275 @@
+/* Reset básico */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Container principal */
+.upload-container {
+  background-color: #f5f5f5;
+  min-height: 100vh;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Formulário principal */
+.upload-form {
+  background-color: white;
+  border-radius: 12px;
+  padding: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Título do formulário */
+.form-title {
+  font-size: 24px;
+  font-weight: 400;
+  color: #333;
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+/* Layout principal em duas colunas */
+.form-row {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+}
+
+/* Seção de upload */
+.upload-section {
+  flex: 1;
+}
+
+.upload-label {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+  display: block;
+}
+
+/* Área de upload */
+.upload-area {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 40px;
+  text-align: center;
+  background-color: #fafafa;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+.upload-area:hover,
+.upload-area.drag-active {
+  border-color: #4285f4;
+  background-color: #f0f7ff;
+}
+
+.file-input {
+  display: none;
+}
+
+.upload-label-button {
+  cursor: pointer;
+  display: block;
+}
+
+.upload-icon {
+  font-size: 32px;
+  color: #4285f4;
+  margin-bottom: 12px;
+}
+
+.upload-label-button span {
+  color: #4285f4;
+  font-size: 16px;
+}
+
+.uploaded-file {
+  margin-top: 16px;
+  padding: 8px;
+  background-color: #e8f5e8;
+  border-radius: 4px;
+  color: #2e7d32;
+  font-size: 14px;
+}
+
+/* Seção de descrição */
+.description-section {
+  margin-top: 16px;
+}
+
+.description-section label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #333;
+}
+
+.description-input {
+  width: 100%;
+  height: 120px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+/* Campos do formulário */
+.form-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.field-row {
+  display: flex;
+  gap: 16px;
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.field-group label {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #333;
+}
+
+.required {
+  color: #e53e3e;
+}
+
+/* Inputs e selects */
+.text-input,
+.date-input,
+.select-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+.text-input:focus,
+.date-input:focus,
+.select-input:focus {
+  outline: none;
+  border-color: #4285f4;
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+}
+
+.select-input {
+  background-color: white;
+  cursor: pointer;
+}
+
+/* Grupo de botões */
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+  margin-top: 40px;
+}
+
+/* Botão cancelar */
+.cancel-button {
+  padding: 12px 24px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: white;
+  color: #666;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.cancel-button:hover {
+  background-color: #f5f5f5;
+}
+
+/* Botão enviar */
+.submit-button {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  background-color: #4285f4;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #3367d6;
+}
+
+.send-icon {
+  transform: rotate(45deg);
+  font-size: 16px;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .form-row {
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  .field-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .upload-container {
+    padding: 16px;
+  }
+  
+  .upload-form {
+    padding: 24px;
+  }
+  
+  .form-title {
+    font-size: 20px;
+  }
+  
+  .button-group {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .cancel-button,
+  .submit-button {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .upload-area {
+    padding: 24px;
+  }
+  
+  .upload-icon {
+    font-size: 24px;
+  }
+  
+  .upload-label-button span {
+    font-size: 14px;
+  }
+}

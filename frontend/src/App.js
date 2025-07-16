@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import LoginPage from './pages/LoginPage/LoginPage';
 import HomePage from './pages/HomePage/HomePage'; // Importe HomePage
 import CadastroPage from './pages/CadastroPage/CadastroPage'; // Importe CadastroPage
+import MaterialUploadForm from './pages/MaterialUploadForm/MaterialUploadForm'; // Importe MaterialUploadForm
 import { BrowserRouter, Routes, Route } from 'react-router-dom'; // Importe BrowserRouter, Routes e Route
 
 function App() {
@@ -28,6 +29,10 @@ function App() {
         <Route
           path="/login"
           element={<LoginPage />}
+        />
+        <Route
+          path="/upload"
+          element={<MaterialUploadForm />}
         />
       </Routes>
     </BrowserRouter>
