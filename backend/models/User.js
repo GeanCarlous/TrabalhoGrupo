@@ -1,52 +1,57 @@
+// /models/User.js
+
 const db = require('../config/database');
 const bcrypt = require('bcryptjs');
 
 class User {
-  static async create(email, senha) {
-    console.log('Criando usuário:', email, senha);
+  /**
+   * Cria um novo usuário no banco de dados com senha criptografada.
+   * @param {string} email - O email do usuário.
+   * @param {string} password - A senha pura (não criptografada) do usuário.
+   * @returns {Promise<object>} O objeto do usuário criado (sem a senha).
+   */
+  static async create(email, password) {
+    // Criptografa a senha antes de salvar no banco
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const query = `
+      INSERT INTO users (email, password) 
+      VALUES ($1, $2) 
+      RETURNING id, email, created_at
+    `;
     
-    return new Promise(async (resolve, reject) => {
-      try {
-        const hashedPassword = await bcrypt.hash(senha, 10);
-        console.log('Senha criptografada:', hashedPassword);
+    const values = [email, hashedPassword];
 
-        db.run(
-          'INSERT INTO users (email, password) VALUES (?, ?)',
-          [email, hashedPassword],
-          function(err) {
-            if (err) {
-              if (err.message.includes('UNIQUE constraint failed')) {
-                reject(new Error('Email já cadastrado'));
-              } else {
-                reject(new Error('Erro interno do servidor'));
-              }
-            } else {
-              resolve({ id: this.lastID, email });
-            }
-          }
-        );
-      } catch (error) {
-        reject(error);
+    try {
+      const { rows } = await db.query(query, values);
+      return rows[0];
+    } catch (err) {
+      // Código '23505' é o erro de violação de constraint UNIQUE no PostgreSQL
+      if (err.code === '23505') {
+        throw new Error('Este email já está cadastrado.');
       }
-    });
+      // Lança outros erros para serem tratados pelo controller
+      throw err;
+    }
   }
 
+  /**
+   * Busca um usuário pelo email.
+   * @param {string} email - O email a ser procurado.
+   * @returns {Promise<object|undefined>} O objeto do usuário se encontrado, senão undefined.
+   */
   static async findByEmail(email) {
-    return new Promise((resolve, reject) => {
-      db.get(
-        'SELECT * FROM users WHERE email = ?',
-        [email],
-        (err, user) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(user);
-          }
-        }
-      );
-    });
+    const query = 'SELECT * FROM users WHERE email = $1';
+    const { rows } = await db.query(query, [email]);
+    return rows[0];
   }
 
+  /**
+   * Valida se a senha fornecida corresponde à senha criptografada.
+   * @param {string} plainPassword - A senha pura enviada pelo usuário.
+   * @param {string} hashedPassword - A senha criptografada do banco de dados.
+   * @returns {Promise<boolean>} True se as senhas corresponderem, senão false.
+   */
   static async validatePassword(plainPassword, hashedPassword) {
     return await bcrypt.compare(plainPassword, hashedPassword);
   }
