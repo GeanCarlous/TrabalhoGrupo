@@ -62,7 +62,6 @@ export default function LoginPage() {
             />
             <span className="icon eye-icon"></span>
           </div>
-          <a href="#" className="forgot-link">esqueci minha senha</a>
           <button type="submit" className="login-btn">Entrar</button>
         </form>
         <div className="signup-link">
