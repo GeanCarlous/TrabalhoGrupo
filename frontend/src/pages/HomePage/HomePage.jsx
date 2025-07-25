@@ -110,11 +110,11 @@ const HomePage = () => {
     };
 
     return (
-        <div className="home-page">
-            {/* Sidebar */}
+        <div className="home-page" style={{ touchAction: 'pan-y' }}>
+            {/* Sidebar Unificada */}
             <div className="sidebar">
                 <div className="logo-container">
-                    <Link to="/perfil">
+                    <Link to="/home">
                         <div className="logo">
                             <svg viewBox="0 0 100 100" className="logo-icon"><circle cx="50" cy="50" r="45" fill="white"/><g fill="black" stroke="black" strokeWidth="2"><path d="M25 35 L35 45 L25 55 M45 35 L55 45 L45 55 M65 35 L75 45 L65 55"/><circle cx="30" cy="65" r="3"/><circle cx="50" cy="65" r="3"/><circle cx="70" cy="65" r="3"/></g></svg>
                         </div>
