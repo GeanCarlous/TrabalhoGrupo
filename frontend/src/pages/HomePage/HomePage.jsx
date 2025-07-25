@@ -5,9 +5,9 @@ import { Link } from 'react-router-dom';
 
 const HomePage = () => {
   // Estados para os filtros
-  const [selectedTags, setSelectedTags] = useState(['Tag 1']);
+  const [selectedTags, setSelectedTags] = useState(['Projeto de Analise de Algoritmos']);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [availableTags] = useState(['Tag 1', 'Tag 2', 'Tag 3', 'Matemática', 'Física', 'Química']);
+  const [availableTags] = useState(['Projeto de Analise de Algoritmos', 'Programação Orientada a Objetos', 'Algebra Linear', 'Matemática Básica', 'Calculo 1', 'Pré Calculo', 'Programação Web', 'Banco de Dados', 'Engenharia de Software', 'Sistemas Operacionais', 'Redes de Computadores', 'Inteligência Artificial', 'Machine Learning', 'Data Science']);
   
   // Dados mock para os cards
   const recentItems = [
@@ -17,6 +17,8 @@ const HomePage = () => {
       professor: 'Prof.ª grefit ghard',
       tipo: 'Prova',
       materia: 'Matemática básica',
+      data: '25/07/2025',
+      descricao: 'At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.',
       image: '/api/placeholder/200/120'
     },
     {
@@ -98,17 +100,19 @@ const HomePage = () => {
       {/* Sidebar */}
       <div className="sidebar">
         <div className="logo-container">
-          <div className="logo">
-            <svg viewBox="0 0 100 100" className="logo-icon">
-              <circle cx="50" cy="50" r="45" fill="white"/>
-              <g fill="black" stroke="black" strokeWidth="2">
-                <path d="M25 35 L35 45 L25 55 M45 35 L55 45 L45 55 M65 35 L75 45 L65 55"/>
-                <circle cx="30" cy="65" r="3"/>
-                <circle cx="50" cy="65" r="3"/>
-                <circle cx="70" cy="65" r="3"/>
-              </g>
-            </svg>
-          </div>
+          <Link to="/perfil">
+            <div className="logo">
+              <svg viewBox="0 0 100 100" className="logo-icon">
+                <circle cx="50" cy="50" r="45" fill="white"/>
+                <g fill="black" stroke="black" strokeWidth="2">
+                  <path d="M25 35 L35 45 L25 55 M45 35 L55 45 L45 55 M65 35 L75 45 L65 55"/>
+                  <circle cx="30" cy="65" r="3"/>
+                  <circle cx="50" cy="65" r="3"/>
+                  <circle cx="70" cy="65" r="3"/>
+                </g>
+              </svg>
+            </div>
+          </Link>
         </div>
         
         <nav className="nav-menu">
@@ -236,17 +240,19 @@ const HomePage = () => {
           <section className="recently-viewed">
             <h2>Visto recentemente</h2>
             <div className="recent-item-single">
-              <div className="card">
-                <div className="card-image">
-                  <img src="/api/placeholder/200/120" alt="Matemática básica" />
-                  <div className="subject-tag">Matemática básica</div>
+              <Link to={`/material/1`} className="card-link">
+                <div className="card">
+                  <div className="card-image">
+                    <img src="/api/placeholder/200/120" alt="Matemática básica" />
+                    <div className="subject-tag">Matemática básica</div>
+                  </div>
+                  <div className="card-content">
+                    <h3>Prova 1 - turma ES</h3>
+                    <p className="professor">Prof.ª grefit ghard</p>
+                    <p className="tipo">Prova</p>
+                  </div>
                 </div>
-                <div className="card-content">
-                  <h3>Prova 1 - turma ES</h3>
-                  <p className="professor">Prof.ª grefit ghard</p>
-                  <p className="tipo">Prova</p>
-                </div>
-              </div>
+              </Link>
             </div>
           </section>
 
@@ -261,17 +267,19 @@ const HomePage = () => {
               <div className="cards-grid">
                 {/* Cards normais */}
                 {recentItems.map((item) => (
-                  <div key={item.id} className="card">
-                    <div className="card-image">
-                      <img src={item.image} alt={item.materia} />
-                      <div className="subject-tag">{item.materia}</div>
+                  <Link to={`/material/${item.id}`} key={item.id} className="card-link">
+                    <div className="card">
+                      <div className="card-image">
+                        <img src={item.image} alt={item.materia} />
+                        <div className="subject-tag">{item.materia}</div>
+                      </div>
+                      <div className="card-content">
+                        <h3>{item.title}</h3>
+                        <p className="professor">{item.professor}</p>
+                        <p className="tipo">{item.tipo}</p>
+                      </div>
                     </div>
-                    <div className="card-content">
-                      <h3>{item.title}</h3>
-                      <p className="professor">{item.professor}</p>
-                      <p className="tipo">{item.tipo}</p>
-                    </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
 
