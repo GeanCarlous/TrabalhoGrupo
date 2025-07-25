@@ -1,25 +1,32 @@
-const orientador = require('../models/Orientador');
-const db = require('../config/database');
+// /controllers/orientadorController.js
 
-// Retorna todos os orientadores (já existente)
-exports.getAll = (req, res) => {
-  orientador.getAll((err, rows) => {
-    if (err) return res.status(500).json({ error: 'Erro ao buscar orientadores.' });
-    res.json(rows);
-  });
+const Orientador = require('../models/Orientador');
+
+// Função que já existia
+const getAll = async (req, res) => {
+  try {
+    const orientadores = await Orientador.getAll();
+    res.json(orientadores);
+  } catch (err) {
+    console.error('Erro no getAll (Orientadores):', err);
+    res.status(500).json({ error: 'Erro interno ao buscar os orientadores.' });
+  }
 };
 
-// NOVA FUNÇÃO: Retorna orientadores de uma disciplina específica
-exports.getByDisciplina = (req, res) => {
-  const { disciplinaId } = req.params;
-  db.all(
-    `SELECT o.id, o.nome FROM orientadores o
-     JOIN disciplina_orientador do ON o.id = do.orientador_id
-     WHERE do.disciplina_id = ?`,
-    [disciplinaId],
-    (err, rows) => {
-      if (err) return res.status(500).json({ error: 'Erro ao buscar orientadores.' });
-      res.json(rows);
-    }
-  );
+// Nova função que estava faltando
+const getByDisciplina = async (req, res) => {
+  try {
+    const { disciplinaId } = req.params;
+    const orientadores = await Orientador.getByDisciplinaId(disciplinaId);
+    res.json(orientadores);
+  } catch (err) {
+    console.error(`Erro ao buscar orientadores por disciplina:`, err);
+    res.status(500).json({ error: 'Erro interno ao buscar os orientadores.' });
+  }
+};
+
+// Exporta ambas as funções
+module.exports = {
+  getAll,
+  getByDisciplina,
 };

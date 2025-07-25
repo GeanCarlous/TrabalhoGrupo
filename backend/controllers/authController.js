@@ -1,61 +1,73 @@
+// /controllers/authController.js
+
 const User = require('../models/User');
 const { generateToken } = require('../utils/jwt');
 
 const register = async (req, res) => {
   try {
-    console.log('Requisição de registro recebida:', req.body);
-    
-    const { email, senha } = req.body;
+    const { email, password } = req.body;
 
-    console.log('Dados do usuário:', { email, senha });
-    
-    const user = await User.create(email, senha);
-    
-    res.status(201).json({ 
-      message: 'Usuário criado com sucesso', 
-      id: user.id 
+    // 1. Validação de campos obrigatórios
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
+    }
+
+    // 2. NOVA VALIDAÇÃO: Verifica se o email termina com @alu.ufc.br
+    const emailDomain = '@alu.ufc.br';
+    if (!email.toLowerCase().endsWith(emailDomain)) {
+      return res.status(400).json({ error: `Formato de email inválido. O email deve ser do domínio ${emailDomain}` });
+    }
+
+    // 3. Continua com a criação do usuário se a validação passar
+    const user = await User.create(email, password);
+
+    res.status(201).json({
+      message: 'Usuário criado com sucesso',
+      user,
     });
   } catch (error) {
-    if (error.message === 'Email já cadastrado') {
-      return res.status(400).json({ error: error.message });
+    if (error.message === 'Este email já está cadastrado.') {
+      return res.status(409).json({ error: error.message });
     }
+    console.error('Erro no registro:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 };
 
 const login = async (req, res) => {
   try {
-    console.log('Requisição de login recebida:', req.body);
     const { email, password } = req.body;
-    
+
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
+    }
+
     const user = await User.findByEmail(email);
-    
     if (!user) {
       return res.status(401).json({ error: 'Credenciais inválidas' });
     }
-    
+
     const isValidPassword = await User.validatePassword(password, user.password);
-    
     if (!isValidPassword) {
       return res.status(401).json({ error: 'Credenciais inválidas' });
     }
-    
-    const token = generateToken({
-      userId: user.id,
-      email: user.email
-    });
-    
+
+    const token = generateToken({ id: user.id, email: user.email });
+
+    delete user.password;
+
     res.json({
       message: 'Login realizado com sucesso',
       token,
-      user: { id: user.id, email: user.email }
+      user,
     });
   } catch (error) {
+    console.error('Erro no login:', error);
     res.status(500).json({ error: 'Erro interno do servidor' });
   }
 };
 
 module.exports = {
   register,
-  login
+  login,
 };
