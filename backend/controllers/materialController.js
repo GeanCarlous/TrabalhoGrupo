@@ -4,7 +4,10 @@ const Material = require('../models/Material');
 const db = require('../config/database');
 
 /**
- * Função auxiliar para verificar se um valor existe em uma tabela.
+ * Função auxiliar para verificar se um valor existe numa tabela.
+ * @param {string} tableName - O nome da tabela (ex: 'disciplinas').
+ * @param {string} value - O valor a ser verificado na coluna 'nome'.
+ * @returns {Promise<boolean>} Retorna true se o valor existir, false caso contrário.
  */
 const checkIfExists = async (tableName, value) => {
   const query = `SELECT id FROM ${tableName} WHERE nome = $1`;
@@ -14,10 +17,11 @@ const checkIfExists = async (tableName, value) => {
 
 /**
  * Função auxiliar para verificar se um orientador está relacionado a uma disciplina.
+ * @param {string} disciplinaNome - O nome da disciplina.
+ * @param {string} orientadorNome - O nome do orientador.
+ * @returns {Promise<boolean>} Retorna true se a relação existir, false caso contrário.
  */
 const checkRelationExists = async (disciplinaNome, orientadorNome) => {
-
-  // Trocamos o apelido 'do' por 'd_o' para garantir que não haja conflito com palavras reservadas.
   const query = `
     SELECT 1
     FROM disciplina_orientador AS d_o 
@@ -29,14 +33,13 @@ const checkRelationExists = async (disciplinaNome, orientadorNome) => {
   return rows.length > 0;
 };
 
-
 const uploadMaterial = async (req, res) => {
   try {
     // --- INÍCIO DAS VALIDAÇÕES ---
 
-    // 1. Validação do arquivo
+    // 1. Validação do ficheiro
     if (!req.file) {
-      return res.status(400).json({ error: 'O envio do arquivo é obrigatório.' });
+      return res.status(400).json({ error: 'O envio do ficheiro é obrigatório.' });
     }
 
     const { titulo, dataObtencao, tipoMaterial, disciplina, orientador, descricao } = req.body;
@@ -87,18 +90,22 @@ const uploadMaterial = async (req, res) => {
     const data = {
       titulo, dataObtencao, tipoMaterial, disciplina, orientador, descricao,
       filePath: req.file.path,
-      fileOriginalName: req.file.originalname
+      fileOriginalName: req.file.originalname,
+      user_id: req.user.id
     };
 
     const material = await Material.create(data);
     res.status(201).json(material);
 
   } catch (err) {
-    console.error('Erro no uploadMaterial:', err);
+    // Log de erro melhorado
+    console.error('--- ERRO DETALHADO NO UPLOAD ---');
+    console.error(err);
+    console.error('--- FIM DO ERRO ---');
+    
     res.status(500).json({ error: 'Erro interno ao salvar o material.' });
   }
 };
-
 
 const getAllMaterials = async (req, res) => {
   try {
@@ -121,8 +128,63 @@ const getMaterialsByDisciplina = async (req, res) => {
   }
 };
 
+const getMaterialById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const material = await Material.getById(id);
+    if (!material) {
+      return res.status(404).json({ error: 'Material não encontrado.' });
+    }
+    res.json(material);
+  } catch (err) {
+    console.error(`Erro ao buscar material por ID:`, err);
+    res.status(500).json({ error: 'Erro interno ao buscar o material.' });
+  }
+};
+
+const deleteMaterial = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id;
+    const deletedRows = await Material.deleteById(id, userId);
+    if (deletedRows === 0) {
+      return res.status(403).json({ error: 'Você não tem permissão para apagar este material.' });
+    }
+    res.status(200).json({ message: 'Material apagado com sucesso.' });
+  } catch (err) {
+    console.error(`Erro ao apagar material:`, err);
+    res.status(500).json({ error: 'Erro interno ao apagar o material.' });
+  }
+}
+
+/**
+ * NOVA FUNÇÃO UNIFICADA
+ * Busca materiais com base em filtros de query string (search, disciplina).
+ * Substitui as antigas getAllMaterials e getMaterialsByDisciplina.
+ */
+const findMaterials = async (req, res) => {
+  try {
+    // Pega os parâmetros da URL, ex: /api/materials?search=prova&disciplina=Cálculo
+    const { search, disciplina } = req.query;
+    
+    const filters = {};
+    if (search) filters.search = search;
+    if (disciplina) filters.disciplina = disciplina;
+
+    const materials = await Material.find(filters);
+    res.json(materials);
+  } catch (err) {
+    console.error('Erro ao buscar materiais:', err);
+    res.status(500).json({ error: 'Erro interno ao buscar os materiais.' });
+  }
+
+};
+
 module.exports = {
   uploadMaterial,
   getAllMaterials,
   getMaterialsByDisciplina,
+  getMaterialById,
+  deleteMaterial,
+  findMaterials
 };

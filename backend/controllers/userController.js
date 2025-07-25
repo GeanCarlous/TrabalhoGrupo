@@ -2,11 +2,19 @@
 const User = require('../models/User');
 const db = require('../config/database');
 
-const getProfile = (req, res) => {
-  // Esta rota agora pode ser usada para popular os campos de edição de perfil
-  res.json({ user: req.user });
+const getProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const profileData = await User.findById(userId); // Usa o novo método findById
+    if (!profileData) {
+      return res.status(404).json({ error: 'Perfil não encontrado.' });
+    }
+    res.json(profileData);
+  } catch (err) {
+    console.error('Erro ao buscar perfil:', err);
+    res.status(500).json({ error: 'Erro interno ao buscar o perfil.' });
+  }
 };
-
 // LÓGICA DE ATUALIZAÇÃO DE PERFIL IMPLEMENTADA
 const updateProfile = async (req, res) => {
   try {
@@ -27,7 +35,10 @@ const updateProfile = async (req, res) => {
     // Atualiza o perfil no banco de dados
     const updatedUser = await User.updateProfile(userId, { nome, curso_id });
 
-    res.json({ message: 'Perfil atualizado com sucesso', user: updatedUser });
+    // Busca o perfil completo para retornar o nome do curso
+    const fullUpdatedUser = await User.findById(userId);
+
+    res.json({ message: 'Perfil atualizado com sucesso', user: fullUpdatedUser });
   } catch (error) {
     console.error('Erro ao atualizar perfil:', error);
     res.status(500).json({ error: 'Erro interno ao atualizar o perfil.' });

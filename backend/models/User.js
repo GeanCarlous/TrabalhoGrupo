@@ -37,23 +37,30 @@ class User {
     return rows[0];
   }
 
-  /**
-   * Busca um usuário pelo email.
-   * @param {string} email - O email a ser procurado.
-   * @returns {Promise<object|undefined>} O objeto do usuário se encontrado, senão undefined.
-   */
+ // MÉTODO ATUALIZADO: Agora busca o nome do curso
   static async findByEmail(email) {
-    const query = 'SELECT * FROM users WHERE email = $1';
+    const query = `
+      SELECT u.id, u.nome, u.email, u.password, u.curso_id, c.nome AS curso_nome
+      FROM users AS u
+      LEFT JOIN cursos AS c ON u.curso_id = c.id
+      WHERE u.email = $1
+    `;
     const { rows } = await db.query(query, [email]);
     return rows[0];
   }
 
-  /**
-   * Valida se a senha fornecida corresponde à senha criptografada.
-   * @param {string} plainPassword - A senha pura enviada pelo usuário.
-   * @param {string} hashedPassword - A senha criptografada do banco de dados.
-   * @returns {Promise<boolean>} True se as senhas corresponderem, senão false.
-   */
+  // NOVO MÉTODO: Para buscar o perfil completo pelo ID
+  static async findById(id) {
+    const query = `
+      SELECT u.id, u.nome, u.email, u.curso_id, c.nome AS curso_nome
+      FROM users AS u
+      LEFT JOIN cursos AS c ON u.curso_id = c.id
+      WHERE u.id = $1
+    `;
+    const { rows } = await db.query(query, [id]);
+    return rows[0];
+  }
+
   static async validatePassword(plainPassword, hashedPassword) {
     return await bcrypt.compare(plainPassword, hashedPassword);
   }

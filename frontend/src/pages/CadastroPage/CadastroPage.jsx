@@ -41,7 +41,7 @@ export default function CadastroPage() {
       const data = await response.json();
 
       if (response.ok) {
-        setSuccess('Cadastro realizado com sucesso! A redirecionar para o login...');
+        setSuccess('Cadastro realizado com sucesso! ');
         setTimeout(() => navigate('/login'), 2000);
       } else {
         setError(data.error || 'Erro ao cadastrar utilizador');

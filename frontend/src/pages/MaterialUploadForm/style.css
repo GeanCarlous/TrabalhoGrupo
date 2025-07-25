@@ -1,275 +1,278 @@
-/* Reset básico */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* Container principal */
+/* --- GERAL --- */
 .upload-container {
-  background-color: #f5f5f5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   min-height: 100vh;
+  background-color: #f0f4f8;
   padding: 20px;
-  font-family: 'Arial', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Formulário principal */
 .upload-form {
-  background-color: white;
-  border-radius: 12px;
-  padding: 32px;
-  max-width: 1200px;
-  margin: 0 auto;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 900px;
 }
 
-/* Título do formulário */
 .form-title {
-  font-size: 24px;
-  font-weight: 400;
-  color: #333;
-  margin-bottom: 32px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #4a5568;
   text-align: center;
+  margin-bottom: 32px;
 }
 
-/* Layout principal em duas colunas */
 .form-row {
   display: flex;
   gap: 40px;
-  align-items: flex-start;
+  margin-bottom: 32px;
 }
 
-/* Seção de upload */
+/* --- SEÇÃO DE UPLOAD (ESQUERDA) --- */
 .upload-section {
+  flex: 1;
+  display: flex; /* Adicionado para controlar o layout interno */
+  flex-direction: column; /* Adicionado para empilhar os elementos */
+}
+
+.form-fields {
   flex: 1;
 }
 
 .upload-label {
-  font-size: 14px;
-  color: #666;
+  font-size: 12px;
+  color: #718096;
   margin-bottom: 8px;
-  display: block;
 }
 
-/* Área de upload */
 .upload-area {
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-  padding: 40px;
+  background-color: #f7fafc;
+  border: 2px solid #e2e8f0; /* Alterado para uma borda sólida subtil */
+  border-radius: 12px;
+  padding: 32px 20px;
   text-align: center;
-  background-color: #fafafa;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-bottom: 24px;
   position: relative;
+  flex-grow: 1; /* Adicionado para ocupar o espaço vertical */
+  display: flex; /* Adicionado para centralizar o conteúdo */
+  flex-direction: column; /* Adicionado para empilhar o conteúdo */
+  align-items: center; /* Adicionado para centralizar horizontalmente */
+  justify-content: center; /* Adicionado para centralizar verticalmente */
 }
 
-.upload-area:hover,
 .upload-area.drag-active {
-  border-color: #4285f4;
-  background-color: #f0f7ff;
+  background-color: #f0f2ff;
+  border: 2px dashed #4f46e5;
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px rgba(79, 70, 229, 0.15);
 }
 
 .file-input {
   display: none;
 }
 
-.upload-label-button {
-  cursor: pointer;
-  display: block;
+.upload-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #718096;
+  transition: color 0.3s ease;
 }
 
-.upload-icon {
-  font-size: 32px;
-  color: #4285f4;
+.upload-area.drag-active .upload-content {
+  color: #4f46e5;
+}
+
+.upload-icon-wrapper {
+  font-size: 48px;
+  color: #4f46e5;
   margin-bottom: 12px;
+  opacity: 0.7;
+  transform: translateY(0);
+  transition: all 0.3s ease;
 }
 
-.upload-label-button span {
-  color: #4285f4;
+.upload-area.drag-active .upload-icon-wrapper {
+  opacity: 1;
+  transform: translateY(-4px);
+}
+
+.upload-text {
   font-size: 16px;
+  font-weight: 500;
+  transition: font-weight 0.3s ease;
 }
 
-.uploaded-file {
-  margin-top: 16px;
-  padding: 8px;
-  background-color: #e8f5e8;
-  border-radius: 4px;
-  color: #2e7d32;
+.upload-area.drag-active .upload-text {
+  font-weight: 600;
+}
+
+.uploaded-file-info {
+  margin-top: 20px;
+  padding: 12px 16px;
+  background-color: #e6fffa;
+  border: 1px solid #38d9a9;
+  border-radius: 8px;
   font-size: 14px;
+  color: #2d3748;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-/* Seção de descrição */
 .description-section {
-  margin-top: 16px;
+  margin-top: 24px;
 }
 
-.description-section label {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 14px;
-  color: #333;
-}
-
-.description-input {
+.description-textarea {
   width: 100%;
-  height: 120px;
+  min-height: 120px; /* Aumentado para melhor equilíbrio */
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid #cbd5e0;
   border-radius: 8px;
   font-size: 14px;
   resize: vertical;
   font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
 }
 
-/* Campos do formulário */
-.form-fields {
-  flex: 1;
+.description-textarea:focus {
+  border-color: #4f46e5;
+}
+
+/* --- CAMPOS DO FORMULÁRIO (DIREITA) --- */
+.field-row-responsive {
   display: flex;
-  flex-direction: column;
   gap: 24px;
-}
-
-.field-row {
-  display: flex;
-  gap: 16px;
+  margin-bottom: 24px;
 }
 
 .field-group {
-  display: flex;
-  flex-direction: column;
   flex: 1;
 }
 
-.field-group label {
-  margin-bottom: 8px;
+.field-label {
   font-size: 14px;
-  color: #333;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 8px;
+  display: block;
 }
 
-.required {
+.required-star {
   color: #e53e3e;
 }
 
-/* Inputs e selects */
-.text-input,
-.date-input,
-.select-input {
+.form-input, .form-select {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
+  padding: 12px 16px;
+  border: 1px solid #cbd5e0;
   border-radius: 8px;
   font-size: 14px;
-  transition: border-color 0.3s ease;
-}
-
-.text-input:focus,
-.date-input:focus,
-.select-input:focus {
+  background-color: #f7fafc;
   outline: none;
-  border-color: #4285f4;
-  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+  transition: border-color 0.2s;
 }
 
-.select-input {
-  background-color: white;
-  cursor: pointer;
+.form-input:focus, .form-select:focus {
+  border-color: #4f46e5;
 }
 
-/* Grupo de botões */
+.form-select:disabled {
+  background-color: #e2e8f0;
+  cursor: not-allowed;
+}
+
+/* --- BOTÕES --- */
 .button-group {
   display: flex;
   justify-content: flex-end;
   gap: 16px;
-  margin-top: 40px;
+  margin-top: 32px;
 }
 
-/* Botão cancelar */
-.cancel-button {
+.btn {
   padding: 12px 24px;
-  border: 1px solid #ddd;
   border-radius: 8px;
-  background-color: white;
-  color: #666;
   font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-}
-
-.cancel-button:hover {
-  background-color: #f5f5f5;
-}
-
-/* Botão enviar */
-.submit-button {
-  padding: 12px 24px;
   border: none;
-  border-radius: 8px;
-  background-color: #4285f4;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+}
+
+.btn-cancel {
+  border: 1px solid #cbd5e0;
+  background: transparent;
+  color: #718096;
+}
+
+.btn-cancel:not(:disabled):hover {
+  background-color: #f7fafc;
+}
+
+.btn-submit {
+  background: linear-gradient(135deg, #4f46e5, #2563eb);
   color: white;
-  font-size: 14px;
-  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
 }
 
-.submit-button:hover {
-  background-color: #3367d6;
+.btn-submit:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
 }
 
-.send-icon {
-  transform: rotate(45deg);
-  font-size: 16px;
+.btn-submit:disabled {
+  background: #cbd5e0;
+  transform: none;
+  box-shadow: none;
 }
 
-/* Responsividade */
+/* --- NOTIFICAÇÕES --- */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: white;
+  z-index: 1001;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.notification.error {
+  background: #e53935;
+}
+
+.notification.success {
+  background: #43a047;
+}
+
+/* --- RESPONSIVIDADE --- */
 @media (max-width: 768px) {
   .form-row {
     flex-direction: column;
-    gap: 24px;
-  }
-  
-  .field-row {
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .upload-container {
-    padding: 16px;
-  }
-  
-  .upload-form {
-    padding: 24px;
-  }
-  
-  .form-title {
-    font-size: 20px;
-  }
-  
-  .button-group {
-    flex-direction: column;
-    gap: 12px;
-  }
-  
-  .cancel-button,
-  .submit-button {
-    width: 100%;
-    justify-content: center;
   }
 }
 
 @media (max-width: 480px) {
-  .upload-area {
-    padding: 24px;
-  }
-  
-  .upload-icon {
-    font-size: 24px;
-  }
-  
-  .upload-label-button span {
-    font-size: 14px;
+  .field-row-responsive {
+    flex-direction: column;
   }
 }
