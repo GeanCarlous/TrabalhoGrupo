@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from 'react-router-dom';
 import "./style.css";
 
 const MaterialUploadForm = () => {
+const navigate = useNavigate(); // Hook para navegação
+
   const [formData, setFormData] = useState({
     titulo: "",
     dataObtencao: "",
@@ -121,7 +124,7 @@ const MaterialUploadForm = () => {
       });
       if (response.ok) {
         alert("Material enviado com sucesso!");
-        handleCancel();
+        navigate("/home"); // Redireciona para a página inicial após o envio
       } else {
         alert("Erro ao enviar material.");
       }
@@ -140,6 +143,7 @@ const MaterialUploadForm = () => {
       descricao: "",
     });
     setUploadedFile(null);
+    navigate("/home"); // Redireciona para a página inicial ao cancelar
   };
 
   return (
