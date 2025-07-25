@@ -30,6 +30,7 @@ const createTablesQueries = `
     descricao TEXT,
     filePath TEXT NOT NULL,
     fileOriginalName TEXT,
+    user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
   );
 

@@ -1,7 +1,11 @@
+// /routes/disciplinas.js
+
 const express = require('express');
 const router = express.Router();
 const disciplinaController = require('../controllers/disciplinaController');
+const { authenticateToken } = require('../middleware/auth');
 
-router.get('/', disciplinaController.getAll);
+// Rota para buscar todas as disciplinas (AGORA PRIVADA)
+router.get('/', authenticateToken, disciplinaController.getAll);
 
 module.exports = router;
