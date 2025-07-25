@@ -89,7 +89,7 @@ const MaterialPage = () => {
     const isOwner = user && user.id === material.user_id;
 
     return (
-        <div className="material-page">
+        <div className="material-page" style={{ touchAction: 'pan-y' }}>
             <div className="sidebar">
                 <div className="logo-container">
                     <Link to="/home">

@@ -7,21 +7,22 @@
 
 html, body {
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .home-page {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   background-color: #f5f5f5;
+  overflow-x: hidden;
 }
 
-/* Sidebar */
+/* --- Sidebar Unificada (Estilo da MaterialPage) --- */
 .home-page .sidebar {
-  width: 200px;
-  min-width: 200px;
+  width: 240px;
+  min-width: 240px;
   height: 100vh;
   background: linear-gradient(180deg, #3A54FF 0%, #2c44d1 100%);
   color: white;
@@ -31,24 +32,30 @@ html, body {
   left: 0;
   top: 0;
   z-index: 1000;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.08);
 }
 
 .home-page .logo-container {
-  padding: 20px;
+  padding: 24px 20px;
   display: flex;
   justify-content: center;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .home-page .logo {
-  width: 60px;
-  height: 60px;
+  width: 64px;
+  height: 64px;
   background: white;
-  border-radius: 50%;
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.home-page .logo:hover {
+  transform: translateY(-2px);
 }
 
 .home-page .logo-icon {
@@ -56,87 +63,107 @@ html, body {
   height: 40px;
 }
 
-.home-page .nav-menu {
-  flex: 1;
-  padding: 20px 0;
+.home-page .logo-icon svg g {
+  fill: #4f46e5;
+  stroke: #4f46e5;
 }
 
-/* ESTILOS DE NAVEGAÇÃO ATUALIZADOS */
+.home-page .nav-menu {
+  flex: 1;
+  padding: 32px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .home-page .nav-item {
   display: flex;
   align-items: center;
-  padding: 12px 20px;
+  padding: 16px 24px;
+  margin: 0 16px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  margin: 4px 10px; /* Adicionado margem para espaçamento */
-  border-radius: 8px; /* Bordas arredondadas */
-  text-decoration: none; /* Remove sublinhado de links */
-  color: rgba(255, 255, 255, 0.8); /* Cor do texto ligeiramente transparente */
+  transition: all 0.3s ease;
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 15px;
+  position: relative;
 }
 
 .home-page .nav-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white; /* Cor do texto mais forte no hover */
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  transform: translateX(4px);
 }
 
 .home-page .nav-item.active {
-  background-color: rgba(255, 255, 255, 0.2);
-  font-weight: 600; /* Texto em negrito para o item ativo */
+  background: rgba(255, 255, 255, 0.15);
   color: white;
-  border-right: none; /* Remove a borda antiga */
+  font-weight: 600;
+}
+
+.home-page .nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 24px;
+  background: white;
+  border-radius: 0 4px 4px 0;
 }
 
 .home-page .nav-icon {
-  width: 20px;
-  height: 20px;
-  margin-right: 12px;
-}
-
-.home-page .nav-item span {
-  font-size: 14px;
+  width: 22px;
+  height: 22px;
+  margin-right: 16px;
+  stroke: white;
 }
 
 .home-page .sidebar-bottom {
-  padding: 20px;
+  padding: 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: auto;
+  justify-content: center;
+  gap: 16px;
 }
 
-.home-page .settings-btn,
-.home-page .collapse-btn {
-  background: none;
+.home-page .settings-btn {
+  background: rgba(255, 255, 255, 0.1);
   border: none;
   color: white;
   cursor: pointer;
-  padding: 8px;
-  border-radius: 6px;
-  transition: background-color 0.2s ease;
+  padding: 12px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
 }
 
-.home-page .settings-btn:hover,
-.home-page .collapse-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+.home-page .settings-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
 }
 
 .home-page .settings-icon,
-.home-page .collapse-icon {
+.home-page .settings-btn svg {
   width: 20px;
   height: 20px;
+  stroke: white;
 }
-
-
 
 /* Main Content */
 .home-page .main-content {
   flex: 1;
   display: flex;
   flex-direction: column;
-  margin-left: 200px;
-  height: 100vh;
-  overflow: hidden;
+  margin-left: 240px;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
 /* Header */
@@ -151,7 +178,7 @@ html, body {
   min-height: 70px;
 }
 
-.home-page.breadcrumb {
+.home-page .breadcrumb {
   color: #6b7280;
   font-size: 14px;
   min-width: 100px;
@@ -234,269 +261,6 @@ html, body {
   color: #6b7280;
 }
 
-/* Content Area */
-.home-page .content-area {
-  flex: 1;
-  padding: 24px;
-  overflow-y: auto;
-  background-color: #f9fafb;
-}
-
-/* Recently Viewed Section */
-.home-page .recently-viewed {
-  margin-bottom: 32px;
-}
-
-.home-page .recently-viewed h2 {
-  font-size: 24px;
-  font-weight: 600;
-  color: #111827;
-  margin-bottom: 16px;
-}
-
-.home-page .recent-item-single {
-  display: flex;
-  justify-content: flex-start;
-}
-
-/* Archive Section */
-.home-page .archive-section h2 {
-  font-size: 24px;
-  font-weight: 600;
-  color: #111827;
-  margin-bottom: 16px;
-}
-
-.home-page .cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-/* Card Styles */
-.home-page .card {
-  background: white;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.home-page .card-link {
-  text-decoration: none;
-  color: inherit;
-}
-
-.home-page .card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.home-page .card-image {
-  position: relative;
-  height: 160px;
-  background: #1f2937;
-  overflow: hidden;
-}
-
-.home-page .card-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.home-page .subject-tag {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  background: #10b981;
-  color: white;
-  padding: 4px 12px;
-  border-radius: 16px;
-  font-size: 12px;
-  font-weight: 500;
-}
-
-/* Card especial para Enviar Material */
-.home-page .enviar-material-card {
-  border: 2px dashed #2563eb;
-  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-}
-
-.home-page .enviar-material-card:hover {
-  border-color: #3730a3;
-  background: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%);
-}
-
-.home-page .enviar-material-image {
-  background: linear-gradient(135deg, #160aef 0%, #2563eb 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.home-page .enviar-material-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: white;
-  text-align: center;
-}
-
-.home-page .upload-icon {
-  width: 48px;
-  height: 48px;
-  margin-bottom: 8px;
-}
-
-.home-page .enviar-material-content span {
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.home-page .card-content {
-  padding: 16px;
-}
-
-.home-page .card-content h3 {
-  font-size: 16px;
-  font-weight: 600;
-  color: #111827;
-  margin-bottom: 4px;
-}
-
-.home-page .card-content .professor {
-  font-size: 14px;
-  color: #111827;
-  font-weight: 500;
-  margin-bottom: 2px;
-}
-
-.home-page .card-content .tipo {
-  font-size: 12px;
-  color: #6b7280;
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .home-page .cards-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 16px;
-  }
-
-  .home-page .header-center {
-    margin: 0 20px;
-  }
-}
-
-@media (max-width: 768px) {
-  .home-page .sidebar {
-    width: 100%;
-    height: 80px;
-    position: relative;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 20px;
-  }
-
-  .home-page .main-content {
-    margin-left: 0;
-    height: calc(100vh - 80px);
-  }
-
-  .home-page .logo-container {
-    padding: 0;
-    border: none;
-  }
-
-  .home-page .logo {
-    width: 40px;
-    height: 40px;
-  }
-
-  .home-page .logo-icon {
-    width: 24px;
-    height: 24px;
-  }
-
-  .home-page .nav-menu {
-    display: flex;
-    flex-direction: row;
-    padding: 0;
-    gap: 20px;
-    flex: 1;
-    justify-content: center;
-  }
-
-  .home-page .nav-item {
-    padding: 8px 12px;
-    margin: 0;
-    border-radius: 6px;
-  }
-
-  .home-page .nav-item.active {
-    border-right: none;
-    border-bottom: 2px solid white;
-  }
-
-  .home-page .nav-item span {
-    display: none;
-  }
-
-  .home-page .sidebar-bottom {
-    padding: 0;
-    border: none;
-    gap: 12px;
-    margin-top: 0;
-  }
-
-  .home-page .header {
-    flex-direction: column;
-    gap: 16px;
-    padding: 16px;
-    min-height: auto;
-  }
-
-  .home-page .header-center {
-    margin: 0;
-    max-width: none;
-  }
-
-  .home-page .content-area {
-    padding: 16px;
-  }
-
-  .home-page .cards-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 12px;
-  }
-
-  .home-page .card-image {
-    height: 120px;
-  }
-}
-
-@media (max-width: 480px) {
-  .home-page .cards-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .home-page .search-input {
-    font-size: 16px; /* Prevents zoom on iOS */
-  }
-
-  .home-page .sidebar {
-    height: 70px;
-  }
-
-  .home-page .main-content {
-    height: calc(100vh - 70px);
-  }
-}
-
-
 /* Filters Section */
 .home-page .filters-section {
   background: white;
@@ -506,7 +270,6 @@ html, body {
 
 .home-page .filters-container {
   display: flex;
-  /* Alinha os itens pela base do texto para um visual mais limpo */
   align-items: baseline;
   gap: 16px;
   flex-wrap: wrap;
@@ -610,12 +373,10 @@ html, body {
   border-radius: 16px;
   font-size: 12px;
   color: #374151;
-  /* Adicionado para controlar o tamanho máximo da tag */
   max-width: 100%;
 }
 
 .home-page .tag-pill span {
-  /* Trunca o texto se for muito longo */
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -631,7 +392,6 @@ html, body {
   align-items: center;
   justify-content: center;
   transition: background-color 0.2s ease;
-  /* Impede que o botão de remover encolha */
   flex-shrink: 0;
 }
 
@@ -645,9 +405,22 @@ html, body {
   color: #6b7280;
 }
 
+/* Content Area - CORRIGIDO PARA MOBILE */
+.home-page .content-area {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  background-color: #f9fafb;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 /* Results Section */
 .home-page .results-section {
   position: relative;
+  width: 100%;
+  max-width: 100%;
 }
 
 .home-page .results-header {
@@ -662,6 +435,118 @@ html, body {
 
 .home-page .results-content {
   position: relative;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Cards Grid - CORRIGIDO PARA MOBILE */
+.home-page .cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Card Styles - UNIFICADO COM MATERIALPAGE */
+.home-page .card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.home-page .card-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.home-page .card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.home-page .card-image {
+  position: relative;
+  height: 160px;
+  background: #1f2937;
+  overflow: hidden;
+}
+
+.home-page .card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-page .subject-tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: #10b981;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  max-width: calc(100% - 24px);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.home-page .card-content {
+  padding: 16px;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.home-page .card-content h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 4px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  line-height: 1.4;
+}
+
+.home-page .card-content .professor {
+  font-size: 14px;
+  color: #111827;
+  font-weight: 500;
+  margin-bottom: 2px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.3;
+}
+
+.home-page .card-content .uploader {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 2px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.home-page .card-content .tipo {
+  font-size: 12px;
+  color: #6b7280;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Pagination */
@@ -702,29 +587,29 @@ html, body {
   font-weight: 500;
 }
 
-/* Floating Upload Button */
+/* Floating Upload Button - UNIFICADO COM MATERIALPAGE */
 .home-page .floating-upload-btn {
   position: fixed;
   bottom: 24px;
   right: 24px;
   width: 56px;
   height: 56px;
-  background: #2563eb;
+  background: linear-gradient(135deg, #4f46e5, #2563eb);
   color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+  box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
   transition: all 0.3s ease;
   z-index: 1000;
   text-decoration: none;
 }
 
 .home-page .floating-upload-btn:hover {
-  background: #1d4ed8;
-  transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(37, 99, 235, 0.6);
+  background: linear-gradient(135deg, #3730a3, #1d4ed8);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 12px 28px rgba(79, 70, 229, 0.6);
 }
 
 .home-page .floating-upload-btn svg {
@@ -732,8 +617,171 @@ html, body {
   height: 24px;
 }
 
-/* Responsive adjustments for filters */
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .home-page .sidebar {
+    width: 200px;
+    min-width: 200px;
+  }
+  
+  .home-page .main-content {
+    margin-left: 200px;
+  }
+
+  .home-page .cards-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
+  }
+
+  .home-page .header-center {
+    margin: 0 20px;
+  }
+}
+
+/* MEDIA QUERY PARA 768px - BARRA SUPERIOR FIXA */
 @media (max-width: 768px) {
+  .home-page .sidebar {
+    width: 100vw;
+    height: 70px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .home-page .main-content {
+    margin-left: 0;
+    margin-top: 70px;
+    width: 100vw;
+    min-height: calc(100vh - 70px);
+    overflow-x: hidden;
+  }
+
+  .home-page .logo-container {
+    padding: 0;
+    border: none;
+    flex-shrink: 0;
+  }
+
+  .home-page .logo {
+    width: 35px;
+    height: 35px;
+  }
+
+  .home-page .logo-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .home-page .nav-menu {
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+    gap: 8px;
+    flex: 1;
+    justify-content: center;
+    max-width: 200px;
+  }
+
+  .home-page .nav-item {
+    padding: 6px 8px;
+    margin: 0;
+    border-radius: 6px;
+    min-width: auto;
+  }
+
+  .home-page .nav-item.active {
+    border-right: none;
+    border-bottom: 2px solid white;
+  }
+
+  .home-page .nav-item.active::before {
+    display: none;
+  }
+
+  .home-page .nav-item span {
+    display: none;
+  }
+
+  .home-page .nav-icon {
+    margin-right: 0;
+    width: 18px;
+    height: 18px;
+  }
+
+  .home-page .sidebar-bottom {
+    padding: 0;
+    border: none;
+    gap: 8px;
+    margin-top: 0;
+    flex-shrink: 0;
+  }
+
+  .home-page .settings-btn {
+    padding: 6px;
+  }
+
+  .home-page .settings-icon,
+  .home-page .settings-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .home-page .header {
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 16px;
+    min-height: auto;
+  }
+
+  .home-page .header-center {
+    margin: 0;
+    max-width: none;
+    width: 100%;
+  }
+
+  .home-page .search-container {
+    max-width: none;
+  }
+
+  .home-page .content-area {
+    padding: 16px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+  }
+
+  .home-page .cards-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-bottom: 80px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .home-page .card {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .home-page .card-link {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .home-page .card-image {
+    height: 120px;
+  }
+
   .home-page .filters-section {
     padding: 12px 16px;
   }
@@ -765,7 +813,96 @@ html, body {
   }
 }
 
+/* MEDIA QUERY PARA 480px */
 @media (max-width: 480px) {
+  .home-page {
+    height: auto;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .home-page .sidebar {
+    height: 60px;
+    padding: 6px 12px;
+  }
+
+  .home-page .main-content {
+    margin-top: 60px;
+    min-height: calc(100vh - 60px);
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  .home-page .content-area {
+    padding: 12px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .home-page .logo {
+    width: 30px;
+    height: 30px;
+  }
+
+  .home-page .logo-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .home-page .nav-menu {
+    gap: 4px;
+  }
+
+  .home-page .nav-item {
+    padding: 4px 6px;
+  }
+
+  .home-page .nav-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .home-page .cards-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .home-page .card {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+  }
+
+  .home-page .card-content {
+    padding: 12px;
+  }
+
+  .home-page .card-content h3 {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .home-page .card-content .professor {
+    font-size: 12px;
+    line-height: 1.3;
+  }
+
+  .home-page .card-content .uploader {
+    font-size: 11px;
+  }
+
+  .home-page .card-content .tipo {
+    font-size: 11px;
+  }
+
+  .home-page .search-input {
+    font-size: 16px;
+  }
+
   .home-page .selected-tags {
     width: 100%;
   }
@@ -773,5 +910,31 @@ html, body {
   .home-page .tag-pill {
     font-size: 11px;
     padding: 4px 8px;
+  }
+
+  body {
+    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
+  }
+}
+
+/* Fix para iOS e Android */
+@supports (-webkit-overflow-scrolling: touch) {
+  .home-page .content-area {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: scroll;
+    transform: translateZ(0);
+  }
+}
+
+/* Fix específico para iOS */
+@media screen and (-webkit-min-device-pixel-ratio: 2) {
+  .home-page {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .home-page .main-content {
+    position: relative;
+    overflow: visible;
   }
 }
