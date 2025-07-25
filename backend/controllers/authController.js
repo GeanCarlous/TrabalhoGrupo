@@ -6,25 +6,14 @@ const { generateToken } = require('../utils/jwt');
 const register = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // 1. Validação de campos obrigatórios
     if (!email || !password) {
       return res.status(400).json({ error: 'Email e senha são obrigatórios.' });
     }
-
-    // 2. NOVA VALIDAÇÃO: Verifica se o email termina com @alu.ufc.br
-    const emailDomain = '@alu.ufc.br';
-    if (!email.toLowerCase().endsWith(emailDomain)) {
-      return res.status(400).json({ error: `Formato de email inválido. O email deve ser do domínio ${emailDomain}` });
+    if (!email.toLowerCase().endsWith('@alu.ufc.br')) {
+      return res.status(400).json({ error: 'O email deve ser do domínio @alu.ufc.br' });
     }
-
-    // 3. Continua com a criação do usuário se a validação passar
     const user = await User.create(email, password);
-
-    res.status(201).json({
-      message: 'Usuário criado com sucesso',
-      user,
-    });
+    res.status(201).json({ message: 'Usuário criado com sucesso!', user });
   } catch (error) {
     if (error.message === 'Este email já está cadastrado.') {
       return res.status(409).json({ error: error.message });

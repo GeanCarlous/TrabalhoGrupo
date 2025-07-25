@@ -1,38 +1,40 @@
 // /models/User.js
-
 const db = require('../config/database');
 const bcrypt = require('bcryptjs');
 
 class User {
-  /**
-   * Cria um novo usuário no banco de dados com senha criptografada.
-   * @param {string} email - O email do usuário.
-   * @param {string} password - A senha pura (não criptografada) do usuário.
-   * @returns {Promise<object>} O objeto do usuário criado (sem a senha).
-   */
+  // MÉTODO CREATE SIMPLIFICADO
   static async create(email, password) {
-    // Criptografa a senha antes de salvar no banco
     const hashedPassword = await bcrypt.hash(password, 10);
-
+    // Note que não inserimos 'nome' ou 'curso_id', eles usarão os valores padrão do banco.
     const query = `
       INSERT INTO users (email, password) 
       VALUES ($1, $2) 
-      RETURNING id, email, created_at
+      RETURNING id, nome, email, curso_id, created_at
     `;
-    
     const values = [email, hashedPassword];
-
     try {
       const { rows } = await db.query(query, values);
       return rows[0];
     } catch (err) {
-      // Código '23505' é o erro de violação de constraint UNIQUE no PostgreSQL
       if (err.code === '23505') {
         throw new Error('Este email já está cadastrado.');
       }
-      // Lança outros erros para serem tratados pelo controller
       throw err;
     }
+  }
+
+  // NOVO MÉTODO PARA ATUALIZAR O PERFIL
+  static async updateProfile(userId, { nome, curso_id }) {
+    const query = `
+      UPDATE users 
+      SET nome = $1, curso_id = $2 
+      WHERE id = $3
+      RETURNING id, nome, email, curso_id
+    `;
+    const values = [nome, curso_id, userId];
+    const { rows } = await db.query(query, values);
+    return rows[0];
   }
 
   /**

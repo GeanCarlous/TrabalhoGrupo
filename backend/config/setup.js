@@ -3,13 +3,20 @@
 const db = require('./database');
 
 const createTablesQueries = `
-  -- Descomente a linha abaixo se quiser limpar as tabelas antes de criar
-  -- DROP TABLE IF EXISTS users, materials, disciplinas, orientadores, tipos_material, disciplina_orientador CASCADE;
+  -- Para recriar o banco, remova o '--' da linha abaixo antes de executar o script.
+   DROP TABLE IF EXISTS users, materials, disciplinas, orientadores, tipos_material, disciplina_orientador, cursos CASCADE;
+
+  CREATE TABLE IF NOT EXISTS cursos (
+    id SERIAL PRIMARY KEY,
+    nome TEXT UNIQUE NOT NULL
+  );
 
   CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
+    nome TEXT NOT NULL DEFAULT 'Aluno',
     email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
+    curso_id INTEGER REFERENCES cursos(id) ON DELETE SET NULL,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
   );
 
@@ -49,15 +56,12 @@ const createTablesQueries = `
 `;
 
 async function setupDatabase() {
-  console.log('Iniciando configuração do banco de dados...');
+  console.log('A iniciar a configuração da base de dados...');
   try {
     await db.query(createTablesQueries);
     console.log('Tabelas criadas com sucesso!');
   } catch (err) {
     console.error('Erro ao criar as tabelas:', err);
-  } finally {
-    // No pg, a conexão é gerenciada pelo pool, então não precisamos fechar manualmente aqui.
-    // Se você estivesse usando um client único, chamaria client.end()
   }
 }
 
