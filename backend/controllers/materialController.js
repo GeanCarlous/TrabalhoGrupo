@@ -35,6 +35,9 @@ const checkRelationExists = async (disciplinaNome, orientadorNome) => {
 
 const uploadMaterial = async (req, res) => {
   try {
+    // LOG para garantir que o controller está sendo chamado
+    console.log("--- INÍCIO uploadMaterial ---");
+
     // --- INÍCIO DAS VALIDAÇÕES ---
 
     // 1. Validação do ficheiro
@@ -137,6 +140,11 @@ const uploadMaterial = async (req, res) => {
       fileOriginalName: req.file.originalname,
       user_id: req.user.id,
     };
+
+    // LOG para depuração do upload
+    console.log("--- req.file após upload ---");
+    console.log(req.file);
+    console.log("--- FIM req.file ---");
 
     const material = await Material.create(data);
     res.status(201).json(material);
