@@ -175,7 +175,7 @@ const MaterialPage = () => {
           <div className="material-card">
             <div className="material-preview-area">
               <FilePreview
-                filepath={material.filepath}
+                filePath={material.filePath}
                 disciplina={material.disciplina}
               />
             </div>

@@ -4,9 +4,9 @@ import React from "react";
  * Um componente que renderiza uma prévia de um ficheiro.
  * Mostra uma imagem se a URL for de uma imagem, ou um ícone de documento caso contrário.
  */
-const FilePreview = ({ filepath, disciplina, fileOriginalName }) => {
+const FilePreview = ({ filePath, disciplina, fileOriginalName }) => {
   // Fallback para o caso de não haver um caminho de ficheiro
-  if (!filepath) {
+  if (!filePath) {
     return (
       <div
         style={{
@@ -24,13 +24,13 @@ const FilePreview = ({ filepath, disciplina, fileOriginalName }) => {
   }
 
   // Verifica se a URL termina com uma extensão de imagem comum
-  const isImage = /\.(jpe?g|png|gif|webp)$/i.test(filepath);
+  const isImage = /\.(jpe?g|png|gif|webp)$/i.test(filePath);
 
   if (isImage) {
     // Se for uma imagem, renderiza a tag <img>
     return (
       <img
-        src={filepath}
+        src={filePath}
         alt={disciplina}
         style={{ width: "100%", height: "100%", objectFit: "cover" }}
         // Fallback caso a imagem específica falhe ao carregar
@@ -50,7 +50,7 @@ const FilePreview = ({ filepath, disciplina, fileOriginalName }) => {
   // Extrai a extensão do arquivo da última parte da URL ou do nome original
   let fileType = "";
   try {
-    const urlPath = filepath.split("?")[0]; // Remove parâmetros da URL
+    const urlPath = filePath.split("?")[0]; // Remove parâmetros da URL
     const lastSegment = urlPath.split("/").pop(); // Pega o último segmento
     if (lastSegment.includes(".")) {
       fileType = lastSegment.split(".").pop().toUpperCase();
