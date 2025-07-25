@@ -1,6 +1,6 @@
 // /models/Material.js
 
-const db = require('../config/database');
+const db = require("../config/database");
 
 class Material {
   /**
@@ -10,15 +10,32 @@ class Material {
    */
   static async create(data) {
     const {
-      titulo, dataObtencao, tipoMaterial, disciplina,
-      orientador, descricao, filePath, fileOriginalName, user_id
+      titulo,
+      dataObtencao,
+      tipoMaterial,
+      disciplina,
+      orientador,
+      descricao,
+      filePath,
+      fileOriginalName,
+      user_id,
     } = data;
     const query = `
       INSERT INTO materials (titulo, dataObtencao, tipoMaterial, disciplina, orientador, descricao, filePath, fileOriginalName, user_id)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *
     `;
-    const values = [titulo, dataObtencao, tipoMaterial, disciplina, orientador, descricao, filePath, fileOriginalName, user_id];
+    const values = [
+      titulo,
+      dataObtencao,
+      tipoMaterial,
+      disciplina,
+      orientador,
+      descricao,
+      filePath,
+      fileOriginalName,
+      user_id,
+    ];
     const { rows } = await db.query(query, values);
     return rows[0];
   }
@@ -70,7 +87,6 @@ class Material {
     const { rows } = await db.query(query, [id]);
     return rows[0];
   }
- 
 
   /**
    * NOVO MÉTODO
@@ -93,7 +109,7 @@ class Material {
       FROM materials AS m
       LEFT JOIN users AS u ON m.user_id = u.id
     `;
-    
+
     const conditions = [];
     const values = [];
     let paramIndex = 1;
@@ -103,23 +119,37 @@ class Material {
       values.push(filters.disciplina);
     }
 
-    if (filters.search) {
-      // ILIKE faz uma pesquisa case-insensitive no PostgreSQL
-      conditions.push(`m.titulo ILIKE $${paramIndex++}`);
+    // Busca combinada: se search e orientador forem iguais, faz OR
+    if (
+      filters.search &&
+      filters.orientador &&
+      filters.search === filters.orientador
+    ) {
+      conditions.push(
+        `(m.titulo ILIKE $${paramIndex} OR m.orientador ILIKE $${paramIndex})`
+      );
       values.push(`%${filters.search}%`);
+      paramIndex++;
+    } else {
+      if (filters.search) {
+        conditions.push(`m.titulo ILIKE $${paramIndex++}`);
+        values.push(`%${filters.search}%`);
+      }
+      if (filters.orientador) {
+        conditions.push(`m.orientador ILIKE $${paramIndex++}`);
+        values.push(`%${filters.orientador}%`);
+      }
     }
 
     if (conditions.length > 0) {
-      baseQuery += ' WHERE ' + conditions.join(' AND ');
+      baseQuery += " WHERE " + conditions.join(" AND ");
     }
 
-    baseQuery += ' ORDER BY m.created_at DESC';
+    baseQuery += " ORDER BY m.created_at DESC";
 
     const { rows } = await db.query(baseQuery, values);
     return rows;
   }
-   
-
 }
 
 module.exports = Material;
