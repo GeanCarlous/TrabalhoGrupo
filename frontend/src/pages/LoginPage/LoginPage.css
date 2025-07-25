@@ -1,81 +1,227 @@
+/* Reset e configurações globais */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 .login-bg {
   min-height: 100vh;
-  background: #2563eb;
+  background: linear-gradient(135deg, #4f46e5 0%, #2563eb 50%, #1d4ed8 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  /* Adicione aqui background icons se quiser */
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+/* Background Icons */
+.background-icons {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.icon {
+  position: absolute;
+  color: rgba(255, 255, 255, 0.1);
+  animation: float 6s ease-in-out infinite;
+}
+
+.icon svg {
+  width: 60px;
+  height: 60px;
+}
+
+/* Posicionamento dos ícones */
+.icon-1 {
+  top: 10%;
+  left: 5%;
+  animation-delay: 0s;
+}
+
+.icon-2 {
+  top: 15%;
+  right: 8%;
+  animation-delay: 1s;
+}
+
+.icon-3 {
+  top: 35%;
+  left: 3%;
+  animation-delay: 2s;
+}
+
+.icon-4 {
+  top: 25%;
+  right: 15%;
+  animation-delay: 3s;
+}
+
+.icon-5 {
+  bottom: 30%;
+  left: 8%;
+  animation-delay: 4s;
+}
+
+.icon-6 {
+  bottom: 15%;
+  right: 5%;
+  animation-delay: 5s;
+}
+
+.icon-7 {
+  top: 60%;
+  left: 15%;
+  animation-delay: 2.5s;
+}
+
+.icon-8 {
+  bottom: 40%;
+  right: 20%;
+  animation-delay: 1.5s;
+}
+
+/* Animação de flutuação */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+  }
 }
 
 .login-card {
   background: #fff;
   border-radius: 24px;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
   padding: 40px 32px;
-  width: 350px;
+  width: 400px;
   max-width: 90vw;
   text-align: center;
+  position: relative;
+  z-index: 10;
+  animation: slideUp 0.6s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .login-card h2 {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
   font-size: 2rem;
   font-weight: 600;
+  color: #111827;
+}
+
+.error-message {
+  background: #fee2e2;
+  color: #dc2626;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  border: 1px solid #fecaca;
 }
 
 form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
 label {
   text-align: left;
-  font-size: 1rem;
-  margin-bottom: 4px;
-  color: #222;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #374151;
 }
 
 .input-group {
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .input-group input {
   width: 100%;
-  padding: 14px 4px 14px 16px;
-  border: none;
+  padding: 14px 16px 14px 48px;
+  border: 2px solid #e5e7eb;
   border-radius: 12px;
-  font-size: 1rem;
-  background: #f7f7f7;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  font-size: 16px;
+  background: #f9fafb;
+  color: #374151;
+  transition: all 0.2s ease;
 }
 
-.icon {
+.input-group input:focus {
+  outline: none;
+  border-color: #2563eb;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.input-group input::placeholder {
+  color: #9ca3af;
+}
+
+/* Ícones dos campos - estáticos, sem animação */
+.input-icon {
+  position: absolute;
+  left: 16px;
+  width: 20px;
+  height: 20px;
+  color: #6b7280;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.email-icon {
+  /* Ícone de e-mail estático */
+}
+
+.password-icon {
+  /* Ícone de cadeado estático */
+}
+
+/* Botão de toggle da senha */
+.password-toggle {
   position: absolute;
   right: 16px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 22px;
-  height: 22px;
-  opacity: 0.5;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  color: #6b7280;
+  transition: all 0.2s ease;
+  z-index: 3;
 }
 
-.user-icon {
-  background: url('data:image/svg+xml;utf8,<svg fill="gray" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M12 14c-4.418 0-8 1.79-8 4v2h16v-2c0-2.21-3.582-4-8-4z"/></svg>') no-repeat center;
-}
-
-.eye-icon {
-  background: url('data:image/svg+xml;utf8,<svg fill="gray" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 5c-7 0-10 7-10 7s3 7 10 7 10-7 10-7-3-7-10-7zm0 12c-2.761 0-5-2.239-5-5s2.239-5 5-5 5 2.239 5 5-2.239 5-5 5zm0-8c-1.654 0-3 1.346-3 3s1.346 3 3 3 3-1.346 3-3-1.346-3-3-3z"/></svg>') no-repeat center;
-}
-
-.forgot-link {
-  display: block;
-  text-align: left;
-  font-size: 0.95rem;
+.password-toggle:hover {
   color: #2563eb;
-  margin-bottom: 8px;
-  text-decoration: none;
+  background: rgba(37, 99, 235, 0.1);
+}
+
+.password-toggle svg {
+  width: 20px;
+  height: 20px;
 }
 
 .login-btn {
@@ -84,16 +230,34 @@ label {
   color: #fff;
   border: none;
   border-radius: 12px;
-  padding: 12px;
-  font-size: 1.1rem;
-  font-weight: 500;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
   cursor: pointer;
   margin-top: 8px;
+  transition: all 0.2s ease;
+}
+
+.login-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.login-btn:active {
+  transform: translateY(0);
 }
 
 .login-btn[disabled] {
   opacity: 0.5;
   cursor: not-allowed;
+  transform: none;
+}
+
+.login-btn[disabled]:hover {
+  background: #2563eb;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Botão circular para avançar */
@@ -109,16 +273,87 @@ label {
   background: #2563eb;
   color: #fff;
   border: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
 
 .signup-link {
-  margin-top: 16px;
-  font-size: 0.98rem;
+  margin-top: 24px;
+  font-size: 14px;
+  color: #6b7280;
 }
 
 .signup-link a {
   color: #2563eb;
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.signup-link a:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .login-card {
+    padding: 32px 24px;
+    width: 350px;
+  }
+  
+  .icon svg {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .login-card h2 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 24px 20px;
+    width: 320px;
+  }
+  
+  .input-group input {
+    font-size: 14px;
+    padding: 12px 14px 12px 44px;
+  }
+  
+  .login-btn {
+    font-size: 14px;
+    padding: 12px;
+  }
+  
+  .icon {
+    display: none;
+  }
+}
+
+/* Estados de transição para os campos */
+.input-group input {
+  transition: all 0.3s ease;
+}
+
+/* Efeito de foco melhorado */
+.input-group input:focus {
+  transform: translateY(-1px);
+}
+
+/* Animação de entrada do card */
+.login-card {
+  animation: cardEntrance 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes cardEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(50px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
