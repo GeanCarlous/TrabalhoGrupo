@@ -51,10 +51,18 @@ html, body {
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  /* Adiciona sombra leve para destacar o ícone */
+  box-shadow: 0 2px 8px rgba(44, 68, 209, 0.08);
 }
 
 .material-page .logo:hover {
   transform: translateY(-2px);
+}
+
+.material-page .logo-icon {
+  width: 48px;
+  height: 48px;
+  display: block;
 }
 
 .material-page .logo-icon svg g {
