@@ -119,11 +119,9 @@ const uploadMaterial = async (req, res) => {
 
     // 5. Validação da relação entre orientador e disciplina
     if (!(await checkRelationExists(disciplina, orientador))) {
-      return res
-        .status(400)
-        .json({
-          error: `O orientador '${orientador}' não está relacionado à disciplina '${disciplina}'.`,
-        });
+      return res.status(400).json({
+        error: `O orientador '${orientador}' não está relacionado à disciplina '${disciplina}'.`,
+      });
     }
 
     // --- FIM DAS VALIDAÇÕES ---
@@ -135,7 +133,7 @@ const uploadMaterial = async (req, res) => {
       disciplina,
       orientador,
       descricao,
-      filePath: req.file.path,
+      filePath: req.file.path || req.file.url, // Garante que seja a URL pública do Cloudinary
       fileOriginalName: req.file.originalname,
       user_id: req.user.id,
     };
