@@ -129,6 +129,19 @@ const uploadMaterial = async (req, res) => {
 
     // --- FIM DAS VALIDAÇÕES ---
 
+    // Adiciona extensão ao final da URL se for arquivo raw
+    let filePath = req.file.path || req.file.url;
+    if (
+      filePath &&
+      req.file.mimetype !== undefined &&
+      filePath.includes("/raw/") &&
+      req.file.originalname
+    ) {
+      const ext = req.file.originalname.split(".").pop();
+      if (ext && !filePath.endsWith("." + ext)) {
+        filePath += "." + ext;
+      }
+    }
     const data = {
       titulo,
       dataObtencao,
@@ -136,7 +149,7 @@ const uploadMaterial = async (req, res) => {
       disciplina,
       orientador,
       descricao,
-      filePath: req.file.path || req.file.url, // Garante que seja a URL pública do Cloudinary
+      filePath,
       fileOriginalName: req.file.originalname,
       user_id: req.user.id,
     };
