@@ -1,6 +1,6 @@
 import React from 'react';
 
-// CORREÇÃO: As props foram alteradas para lowercase (filepath, filetype)
+// As props agora são filepath e filetype (lowercase) para corresponder ao backend
 const FilePreview = ({ filepath, filetype, disciplina }) => {
   // Fallback se não houver caminho de ficheiro
   if (!filepath) {
@@ -11,7 +11,7 @@ const FilePreview = ({ filepath, filetype, disciplina }) => {
     );
   }
 
-  // A lógica agora usa 'filetype' (lowercase)
+  // A lógica usa 'filetype' (lowercase)
   const isImage = filetype && filetype.startsWith('image/');
 
   if (isImage) {
