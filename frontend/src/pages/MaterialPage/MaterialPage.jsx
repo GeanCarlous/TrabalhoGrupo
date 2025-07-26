@@ -12,6 +12,7 @@ const MaterialPage = () => {
     const [material, setMaterial] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [isDownloading, setIsDownloading] = useState(false); // Estado para o botão de download
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -40,11 +41,6 @@ const MaterialPage = () => {
         fetchMaterial();
     }, [id, token, isAuthenticated, navigate]);
     
-    const handleLogout = () => {
-        logout();
-        navigate('/login');
-    };
-
     const handleDelete = async () => {
         const confirmed = window.confirm('Tem a certeza de que quer apagar este material? Esta ação não pode ser desfeita.');
         
@@ -68,6 +64,38 @@ const MaterialPage = () => {
         }
     };
 
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
+    };
+
+    const handleDownload = async () => {
+        if (!material || !material.filepath) return;
+        setIsDownloading(true);
+        setError('');
+
+        try {
+            const response = await fetch(material.filepath);
+            if (!response.ok) {
+                throw new Error('Não foi possível aceder ao ficheiro para download.');
+            }
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', material.fileoriginalname || 'download');
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+            window.URL.revokeObjectURL(url);
+        } catch (err) {
+            setError('Falha ao baixar o ficheiro.');
+        } finally {
+            setIsDownloading(false);
+        }
+    };
+
+
     if (loading) {
         return <div className="material-page-status">A carregar material...</div>;
     }
@@ -81,7 +109,6 @@ const MaterialPage = () => {
     }
 
     const isOwner = user && user.id === material.user_id;
-    // CORREÇÃO: Usar o nome correto da coluna do backend (filepath e filetype)
     const isImage = material.filetype && material.filetype.startsWith('image/');
 
     return (
@@ -127,7 +154,6 @@ const MaterialPage = () => {
                 <div className="material-content">
                     <div className="material-card">
                         <div className="material-preview-area">
-                            {/* CORREÇÃO: Passar os nomes de props corretos */}
                             <FilePreview
                                 filepath={material.filepath}
                                 fileType={material.filetype}
@@ -158,17 +184,17 @@ const MaterialPage = () => {
                                         <span>Apagar</span>
                                     </button>
                                 )}
-                                {/* CORREÇÃO: Lógica do botão de download/visualização */}
-                                <a
-                                    href={material.filepath}
-                                    target={isImage ? "_blank" : undefined}
-                                    rel="noopener noreferrer"
-                                    className="download-btn"
-                                    download={!isImage ? material.fileoriginalname : undefined}
-                                >
-                                    <svg className="download-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" /></svg>
-                                    <span>{isImage ? "Visualizar" : "Baixar"}</span>
-                                </a>
+                                {isImage ? (
+                                    <a href={material.filepath} target="_blank" rel="noopener noreferrer" className="download-btn">
+                                        <svg className="download-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" /></svg>
+                                        <span>Visualizar</span>
+                                    </a>
+                                ) : (
+                                    <button className="download-btn" onClick={handleDownload} disabled={isDownloading}>
+                                        <svg className="download-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" /></svg>
+                                        <span>{isDownloading ? 'A baixar...' : 'Baixar'}</span>
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>
