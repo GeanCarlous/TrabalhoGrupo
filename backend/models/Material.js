@@ -61,6 +61,10 @@ class Material {
 
     baseQuery += ' ORDER BY m.created_at DESC';
 
+    // Log de diagnóstico para a consulta final
+    console.log('[MODEL] Executando a consulta:', baseQuery);
+    console.log('[MODEL] Com os valores:', values);
+
     const { rows } = await db.query(baseQuery, values);
     return rows;
   }

@@ -88,32 +88,9 @@ const uploadMaterial = async (req, res) => {
   }
 };
 
-// Função para buscar todos os materiais (sem filtros)
-const getAllMaterials = async (req, res) => {
-  try {
-    const materials = await Material.find({}); // Usa o método find sem filtros
-    res.json(materials);
-  } catch (err) {
-    console.error('Erro no getAllMaterials:', err);
-    res.status(500).json({ error: 'Erro interno ao buscar os materiais.' });
-  }
-};
-
-// Função para buscar materiais por disciplina (usando o parâmetro da rota)
-const getMaterialsByDisciplina = async (req, res) => {
-  try {
-    const { disciplinaNome } = req.params;
-    const materials = await Material.find({ disciplina: disciplinaNome });
-    res.json(materials);
-  } catch (err) {
-    console.error(`Erro ao buscar materiais por disciplina:`, err);
-    res.status(500).json({ error: 'Erro interno ao buscar os materiais.' });
-  }
-};
-
-// Função unificada para busca e filtro (usando query string)
 const findMaterials = async (req, res) => {
   try {
+    console.log('[CONTROLLER] Filtros recebidos da rota:', req.query);
     const { search, disciplina } = req.query;
     const filters = {};
     if (search) filters.search = search;
@@ -155,12 +132,9 @@ const deleteMaterial = async (req, res) => {
   }
 };
 
-// Exporta todas as funções que o seu ficheiro de rotas precisa
 module.exports = {
   uploadMaterial,
-  getAllMaterials,
-  getMaterialsByDisciplina,
+  findMaterials,
   getMaterialById,
   deleteMaterial,
-  findMaterials,
 };
