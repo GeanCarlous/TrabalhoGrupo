@@ -3,24 +3,13 @@
 const Material = require('../models/Material');
 const db = require('../config/database');
 
-/**
- * Função auxiliar para verificar se um valor existe numa tabela.
- * @param {string} tableName - O nome da tabela (ex: 'disciplinas').
- * @param {string} value - O valor a ser verificado na coluna 'nome'.
- * @returns {Promise<boolean>} Retorna true se o valor existir, false caso contrário.
- */
+// Funções auxiliares permanecem inalteradas
 const checkIfExists = async (tableName, value) => {
   const query = `SELECT id FROM ${tableName} WHERE nome = $1`;
   const { rows } = await db.query(query, [value]);
   return rows.length > 0;
 };
 
-/**
- * Função auxiliar para verificar se um orientador está relacionado a uma disciplina.
- * @param {string} disciplinaNome - O nome da disciplina.
- * @param {string} orientadorNome - O nome do orientador.
- * @returns {Promise<boolean>} Retorna true se a relação existir, false caso contrário.
- */
 const checkRelationExists = async (disciplinaNome, orientadorNome) => {
   const query = `
     SELECT 1
@@ -36,19 +25,13 @@ const checkRelationExists = async (disciplinaNome, orientadorNome) => {
 const uploadMaterial = async (req, res) => {
   try {
     // --- INÍCIO DAS VALIDAÇÕES ---
-
-    // 1. Validação do ficheiro
     if (!req.file) {
       return res.status(400).json({ error: 'O envio do ficheiro é obrigatório.' });
     }
 
-    // Validação de tipos de arquivo permitidos [CORREÇÃO ADICIONADA]
     const allowedMimeTypes = [
-      'image/jpeg', 
-      'image/png', 
-      'application/pdf', 
-      'application/zip',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+      'image/jpeg', 'image/png', 'application/pdf', 
+      'application/zip', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     ];
     
     if (!allowedMimeTypes.includes(req.file.mimetype)) {
@@ -57,7 +40,7 @@ const uploadMaterial = async (req, res) => {
 
     const { titulo, dataObtencao, tipoMaterial, disciplina, orientador, descricao } = req.body;
 
-    // 2. Validação dos campos obrigatórios
+    // Validação de campos obrigatórios
     const camposObrigatorios = { titulo, dataObtencao, tipoMaterial, disciplina, orientador };
     for (const campo in camposObrigatorios) {
       if (!camposObrigatorios[campo]) {
@@ -65,7 +48,7 @@ const uploadMaterial = async (req, res) => {
       }
     }
 
-    // 3. Validação da data (formato DD-MM-AAAA)
+    // Validação de data
     const partesData = dataObtencao.split('-');
     if (partesData.length !== 3 || partesData[0].length !== 2 || partesData[1].length !== 2 || partesData[2].length !== 4) {
       return res.status(400).json({ error: 'Formato de data inválido. Use DD-MM-AAAA.' });
@@ -75,14 +58,14 @@ const uploadMaterial = async (req, res) => {
     const dataAtual = new Date();
     dataObtencaoDate.setHours(0, 0, 0, 0);
     dataAtual.setHours(0, 0, 0, 0);
-    if (isNaN(dataObtencaoDate.getTime()) || dataObtencaoDate.getDate() !== parseInt(dia)) {
-      return res.status(400).json({ error: 'Data inválida. Verifique o dia e o mês.' });
+    if (isNaN(dataObtencaoDate.getTime())) {
+      return res.status(400).json({ error: 'Data inválida. Verifique o formato.' });
     }
     if (dataObtencaoDate > dataAtual) {
-      return res.status(400).json({ error: 'A data de obtenção não pode ser uma data futura.' });
+      return res.status(400).json({ error: 'A data de obtenção não pode ser futura.' });
     }
 
-    // 4. Validação de existência dos dados
+    // Validação de existência no banco
     if (!(await checkIfExists('disciplinas', disciplina))) {
       return res.status(400).json({ error: `A disciplina '${disciplina}' não é válida.` });
     }
@@ -93,19 +76,36 @@ const uploadMaterial = async (req, res) => {
       return res.status(400).json({ error: `O orientador '${orientador}' não é válido.` });
     }
 
-    // 5. Validação da relação entre orientador e disciplina
+    // Validação de relação
     if (!(await checkRelationExists(disciplina, orientador))) {
       return res.status(400).json({ error: `O orientador '${orientador}' não está relacionado à disciplina '${disciplina}'.` });
     }
-
     // --- FIM DAS VALIDAÇÕES ---
 
-    // CORREÇÃO CRÍTICA: Tratamento da URL do Cloudinary [ÁREA MODIFICADA]
-    let fileUrl = req.file.secure_url; // SEMPRE use secure_url
+    // SOLUÇÃO ROBUSTA PARA URL DO ARQUIVO
+    let fileUrl = '';
     
-    // Adiciona parâmetro para forçar download se não for imagem
+    // 1. Verificação de propriedades existentes
+    if (req.file.secure_url) {
+      fileUrl = req.file.secure_url;
+    } else if (req.file.url) {
+      fileUrl = req.file.url;
+    } else if (req.file.path) {
+      fileUrl = req.file.path;
+    } else {
+      // 2. Fallback para extrair do Cloudinary usando public_id
+      const extension = req.file.originalname.split('.').pop();
+      fileUrl = cloudinary.url(`${req.file.public_id}.${extension}`, {
+        secure: true,
+        resource_type: req.file.resource_type
+      });
+    }
+
+    // 3. Adição de parâmetros para não-imagens
     if (!req.file.mimetype.startsWith('image/')) {
-      fileUrl += '?flags=attachment'; // Força download no Cloudinary
+      // Verifica se já tem parâmetros de query
+      const separator = fileUrl.includes('?') ? '&' : '?';
+      fileUrl += `${separator}flags=attachment`;
     }
 
     const data = {
@@ -115,9 +115,9 @@ const uploadMaterial = async (req, res) => {
       disciplina, 
       orientador, 
       descricao,
-      filePath: fileUrl, // URL correta com tratamento
+      filePath: fileUrl,
       fileOriginalName: req.file.originalname,
-      fileType: req.file.mimetype, // Novo campo salvo [ADICIONADO]
+      fileType: req.file.mimetype,
       user_id: req.user.id
     };
 
@@ -125,20 +125,29 @@ const uploadMaterial = async (req, res) => {
     res.status(201).json(material);
 
   } catch (err) {
-    // Tratamento melhorado de erros do Cloudinary [CORREÇÃO ADICIONADA]
-    if (err.message.includes('Cloudinary API') || err.message.includes('upload error')) {
-      console.error('ERRO DO CLOUDINARY:', err);
-      return res.status(502).json({ error: 'Falha no upload do arquivo. Tente novamente.' });
+    // Tratamento de erros completo
+    let errorMessage = 'Erro interno ao salvar o material.';
+    let statusCode = 500;
+
+    if (err.message.includes('Cloudinary') || err.message.includes('upload')) {
+      errorMessage = 'Falha no serviço de armazenamento. Tente novamente.';
+      statusCode = 502;
+    } else if (err.message.includes('database') || err.message.includes('query')) {
+      errorMessage = 'Erro de comunicação com o banco de dados.';
+      statusCode = 503;
     }
+
+    console.error('--- ERRO CRÍTICO ---');
+    console.error('Mensagem:', err.message);
+    console.error('Stack:', err.stack);
+    console.error('Arquivo:', req.file);
+    console.error('---------------------');
     
-    console.error('--- ERRO DETALHADO NO UPLOAD ---');
-    console.error(err);
-    console.error('--- FIM DO ERRO ---');
-    
-    res.status(500).json({ error: 'Erro interno ao salvar o material.' });
+    res.status(statusCode).json({ error: errorMessage });
   }
 };
 
+// Resto das funções permanecem INALTERADAS
 const getAllMaterials = async (req, res) => {
   try {
     const materials = await Material.getAll();
@@ -189,14 +198,8 @@ const deleteMaterial = async (req, res) => {
   }
 }
 
-/**
- * NOVA FUNÇÃO UNIFICADA
- * Busca materiais com base em filtros de query string (search, disciplina).
- * Substitui as antigas getAllMaterials e getMaterialsByDisciplina.
- */
 const findMaterials = async (req, res) => {
   try {
-    // Pega os parâmetros da URL, ex: /api/materials?search=prova&disciplina=Cálculo
     const { search, disciplina } = req.query;
     
     const filters = {};
