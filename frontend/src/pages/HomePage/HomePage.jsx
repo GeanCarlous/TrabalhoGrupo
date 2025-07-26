@@ -108,7 +108,7 @@ const HomePage = () => {
 
     return (
         <div className="home-page">
-            {/* Sidebar Atualizada */}
+            {/* Sidebar */}
             <div className="sidebar">
                 <div className="logo-container" onClick={() => navigate("/perfil")}>
                     <div className="logo">
@@ -118,14 +118,10 @@ const HomePage = () => {
                             xmlns="http://www.w3.org/2000/svg"
                         >
                             <circle cx="32" cy="32" r="30" fill="#fff" />
-                            {/* Chapéu de formatura */}
                             <rect x="20" y="16" width="24" height="8" rx="2" fill="#2563eb" />
                             <polygon points="32,10 20,16 44,16" fill="#2563eb" />
-                            {/* Cabeça */}
                             <circle cx="32" cy="36" r="10" fill="#4f46e5" />
-                            {/* Ombros */}
                             <ellipse cx="32" cy="50" rx="14" ry="6" fill="#2563eb" />
-                            {/* Sorriso */}
                             <path
                                 d="M28 39 Q32 43 36 39"
                                 stroke="#fff"
@@ -165,7 +161,7 @@ const HomePage = () => {
                         <form className="search-container" onSubmit={handleSearchSubmit}>
                             <input 
                                 type="text" 
-                                placeholder="Procurar por título..." 
+                                placeholder="Procurar por título ou professor..." 
                                 className="search-input"
                                 value={searchInput}
                                 onChange={(e) => setSearchInput(e.target.value)}
