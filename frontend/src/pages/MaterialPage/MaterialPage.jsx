@@ -49,8 +49,6 @@ const MaterialPage = () => {
   };
 
   const handleDelete = async () => {
-    // Usamos um modal customizado em vez de window.confirm para uma melhor UX
-    // Esta é uma implementação simples, pode ser substituída por uma biblioteca de modais
     const confirmed = window.confirm(
       "Tem a certeza de que quer apagar este material? Esta ação não pode ser desfeita."
     );
@@ -95,6 +93,8 @@ const MaterialPage = () => {
   }
 
   const isOwner = user && user.id === material.user_id;
+  // Determina se é imagem baseado no fileType
+  const isImage = material.fileType && material.fileType.startsWith('image/');
 
   return (
     <div className="material-page" style={{ touchAction: "pan-y" }}>
@@ -176,6 +176,7 @@ const MaterialPage = () => {
             <div className="material-preview-area">
               <FilePreview
                 filePath={material.filePath}
+                fileType={material.fileType} // Passe o tipo para o componente
                 disciplina={material.disciplina}
               />
             </div>
@@ -232,9 +233,10 @@ const MaterialPage = () => {
                 )}
                 <a
                   href={material.filePath}
-                  target="_blank"
+                  target={isImage ? "_blank" : undefined} // Abre em nova aba apenas para imagens
                   rel="noopener noreferrer"
                   className="download-btn"
+                  download={!isImage ? material.fileOriginalName : undefined} // Força download para não-imagens
                 >
                   <svg
                     className="download-icon"
@@ -243,7 +245,7 @@ const MaterialPage = () => {
                   >
                     <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
                   </svg>
-                  <span>Ver / Baixar</span>
+                  <span>{isImage ? "Visualizar" : "Baixar"}</span>
                 </a>
               </div>
             </div>

@@ -2,9 +2,9 @@ import React from "react";
 
 /**
  * Um componente que renderiza uma prévia de um ficheiro.
- * Mostra uma imagem se a URL for de uma imagem, ou um ícone de documento caso contrário.
+ * Mostra uma imagem se o tipo for imagem, um PDF em um iframe, ou um ícone de documento caso contrário.
  */
-const FilePreview = ({ filePath, disciplina, fileOriginalName }) => {
+const FilePreview = ({ filePath, disciplina, fileType, fileOriginalName }) => {
   // Fallback para o caso de não haver um caminho de ficheiro
   if (!filePath) {
     return (
@@ -23,11 +23,19 @@ const FilePreview = ({ filePath, disciplina, fileOriginalName }) => {
     );
   }
 
-  // Verifica se a URL termina com uma extensão de imagem comum
-  const isImage = /\.(jpe?g|png|gif|webp)$/i.test(filePath);
+  // Determina o tipo de arquivo usando o fileType
+  const isImage = fileType && fileType.startsWith('image/');
+  const isPDF = fileType === 'application/pdf';
+  const isDocument = fileType && (
+    fileType.includes('word') || 
+    fileType.includes('excel') || 
+    fileType.includes('powerpoint') ||
+    fileType.includes('document')
+  );
+  const isArchive = fileType && fileType.includes('zip');
 
+  // Se for uma imagem, renderiza a tag <img>
   if (isImage) {
-    // Se for uma imagem, renderiza a tag <img>
     return (
       <img
         src={filePath}
@@ -39,30 +47,62 @@ const FilePreview = ({ filePath, disciplina, fileOriginalName }) => {
           e.target.style.display = "none";
           const parent = e.target.parentNode;
           if (parent) {
-            parent.innerHTML += `<div style='display: flex; align-items: center; justify-content: center; height: 100%; background: #f3f4f6; color: #9ca3af;'>Imagem indisponível</div>`;
+            parent.innerHTML = `<div style='display: flex; align-items: center; justify-content: center; height: 100%; background: #f3f4f6; color: #9ca3af;'>Imagem indisponível</div>`;
           }
         }}
       />
     );
   }
 
-  // Se não for uma imagem, renderiza um ícone de documento
-  // Extrai a extensão do arquivo da última parte da URL ou do nome original
-  let fileType = "";
-  try {
-    const urlPath = filePath.split("?")[0]; // Remove parâmetros da URL
-    const lastSegment = urlPath.split("/").pop(); // Pega o último segmento
-    if (lastSegment.includes(".")) {
-      fileType = lastSegment.split(".").pop().toUpperCase();
-    } else if (fileOriginalName && fileOriginalName.includes(".")) {
-      fileType = fileOriginalName.split(".").pop().toUpperCase();
-    } else {
-      fileType = "FILE";
-    }
-  } catch {
-    fileType = "FILE";
+  // Se for um PDF, renderiza um iframe para visualização
+  if (isPDF) {
+    return (
+      <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <iframe 
+          src={`${filePath}#view=fitH`} 
+          title="PDF Preview"
+          style={{ flex: 1, border: 'none' }}
+        />
+        <div style={{ textAlign: 'center', padding: '8px', background: '#f3f4f6' }}>
+          <a 
+            href={filePath} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{ color: '#2563eb', textDecoration: 'underline' }}
+          >
+            Abrir em nova janela
+          </a>
+        </div>
+      </div>
+    );
   }
-  // Não exibe o nome do arquivo, apenas o ícone e a extensão
+
+  // Determina a extensão e ícone apropriados
+  let fileExtension = "FILE";
+  let iconPath = "";
+  
+  try {
+    if (fileOriginalName && fileOriginalName.includes(".")) {
+      fileExtension = fileOriginalName.split(".").pop().toUpperCase();
+    }
+    
+    // Define ícones específicos para tipos conhecidos
+    if (isDocument) {
+      if (fileType.includes('word')) {
+        iconPath = "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M16 13H8 M16 17H8 M10 9H8";
+      } else if (fileType.includes('excel')) {
+        iconPath = "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M17 9l-5 5 M12 9v10 M7 9l5 5";
+      } else if (fileType.includes('powerpoint')) {
+        iconPath = "M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z M14 2v6h6 M8 11v4 M12 11v4 M16 11v4 M8 17v.01 M12 17v.01 M16 17v.01";
+      }
+    } else if (isArchive) {
+      iconPath = "M12 3v7m0 0v7m0-7h7m-7 0H5 M4 8h16 M4 12h16 M4 16h16";
+    }
+  } catch (error) {
+    console.error("Erro ao processar informações do arquivo:", error);
+  }
+
+  // Renderiza um ícone de documento com a extensão
   return (
     <div
       style={{
@@ -78,7 +118,7 @@ const FilePreview = ({ filePath, disciplina, fileOriginalName }) => {
         padding: "8px",
       }}
     >
-      {/* Ícone de Documento SVG */}
+      {/* Ícone de Documento SVG - Dinâmico para tipos específicos */}
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="40"
@@ -92,9 +132,10 @@ const FilePreview = ({ filePath, disciplina, fileOriginalName }) => {
       >
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
         <polyline points="14 2 14 8 20 8"></polyline>
+        {iconPath && <path d={iconPath}></path>}
       </svg>
       <span style={{ marginTop: "10px", fontWeight: "600", fontSize: "18px" }}>
-        {fileType}
+        {fileExtension}
       </span>
     </div>
   );

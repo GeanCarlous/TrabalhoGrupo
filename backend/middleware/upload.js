@@ -1,5 +1,3 @@
-// /middleware/upload.js
-
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
@@ -14,27 +12,28 @@ cloudinary.config({
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: async (req, file) => {
-    // ... (sua lógica de resource_type e folder)
-    let folder;
-    let resource_type;
-    if (file.mimetype.startsWith('image/')) {
-      folder = 'materiais_estudo/imagens';
-      resource_type = 'image';
-    } else {
-      folder = 'materiais_estudo/documentos';
-      resource_type = 'raw';
-    }
+    // Determina tipo e pasta baseado no MIME Type
+    const isImage = file.mimetype.startsWith('image/');
+    const folder = isImage 
+      ? 'materiais_estudo/imagens' 
+      : 'materiais_estudo/documentos';
+    
+    // Extrai extensão original (crucial para PDFs!)
+    const extension = file.originalname.split('.').pop();
+    
     return {
       folder: folder,
-      resource_type: resource_type,
+      resource_type: isImage ? 'image' : 'raw',
+      public_id: `${Date.now()}-${file.originalname}`, // Nome original + timestamp
+      format: isImage ? undefined : extension, // Força extensão para RAW
+      allowed_formats: isImage ? ['jpg', 'jpeg', 'png', 'gif'] : ['pdf', 'zip', 'docx'] // Opcional
     };
   },
 });
 
-// Adiciona a opção 'limits' para definir o tamanho máximo do ficheiro
 const upload = multer({ 
   storage: storage,
-  limits: { fileSize: 10 * 1024 * 1024 } // 10 Megabytes
+  limits: { fileSize: 10 * 1024 * 1024 } // 10MB
 });
 
 module.exports = upload;

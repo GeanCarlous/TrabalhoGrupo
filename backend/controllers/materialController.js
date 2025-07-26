@@ -42,6 +42,19 @@ const uploadMaterial = async (req, res) => {
       return res.status(400).json({ error: 'O envio do ficheiro é obrigatório.' });
     }
 
+    // Validação de tipos de arquivo permitidos [CORREÇÃO ADICIONADA]
+    const allowedMimeTypes = [
+      'image/jpeg', 
+      'image/png', 
+      'application/pdf', 
+      'application/zip',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ];
+    
+    if (!allowedMimeTypes.includes(req.file.mimetype)) {
+      return res.status(400).json({ error: 'Tipo de arquivo não suportado. Use JPEG, PNG, PDF, ZIP ou DOCX.' });
+    }
+
     const { titulo, dataObtencao, tipoMaterial, disciplina, orientador, descricao } = req.body;
 
     // 2. Validação dos campos obrigatórios
@@ -87,10 +100,24 @@ const uploadMaterial = async (req, res) => {
 
     // --- FIM DAS VALIDAÇÕES ---
 
+    // CORREÇÃO CRÍTICA: Tratamento da URL do Cloudinary [ÁREA MODIFICADA]
+    let fileUrl = req.file.secure_url; // SEMPRE use secure_url
+    
+    // Adiciona parâmetro para forçar download se não for imagem
+    if (!req.file.mimetype.startsWith('image/')) {
+      fileUrl += '?flags=attachment'; // Força download no Cloudinary
+    }
+
     const data = {
-      titulo, dataObtencao, tipoMaterial, disciplina, orientador, descricao,
-      filePath: req.file.path,
+      titulo, 
+      dataObtencao, 
+      tipoMaterial, 
+      disciplina, 
+      orientador, 
+      descricao,
+      filePath: fileUrl, // URL correta com tratamento
       fileOriginalName: req.file.originalname,
+      fileType: req.file.mimetype, // Novo campo salvo [ADICIONADO]
       user_id: req.user.id
     };
 
@@ -98,7 +125,12 @@ const uploadMaterial = async (req, res) => {
     res.status(201).json(material);
 
   } catch (err) {
-    // Log de erro melhorado
+    // Tratamento melhorado de erros do Cloudinary [CORREÇÃO ADICIONADA]
+    if (err.message.includes('Cloudinary API') || err.message.includes('upload error')) {
+      console.error('ERRO DO CLOUDINARY:', err);
+      return res.status(502).json({ error: 'Falha no upload do arquivo. Tente novamente.' });
+    }
+    
     console.error('--- ERRO DETALHADO NO UPLOAD ---');
     console.error(err);
     console.error('--- FIM DO ERRO ---');
@@ -177,7 +209,6 @@ const findMaterials = async (req, res) => {
     console.error('Erro ao buscar materiais:', err);
     res.status(500).json({ error: 'Erro interno ao buscar os materiais.' });
   }
-
 };
 
 module.exports = {

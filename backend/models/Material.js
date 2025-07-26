@@ -18,11 +18,15 @@ class Material {
       descricao,
       filePath,
       fileOriginalName,
+      fileType, // CAMPO NOVO ADICIONADO
       user_id,
     } = data;
+    
     const query = `
-      INSERT INTO materials (titulo, dataObtencao, tipoMaterial, disciplina, orientador, descricao, filePath, fileOriginalName, user_id)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      INSERT INTO materials (
+        titulo, dataObtencao, tipoMaterial, disciplina, orientador, 
+        descricao, filePath, fileOriginalName, fileType, user_id
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING *
     `;
     const values = [
@@ -34,6 +38,7 @@ class Material {
       descricao,
       filePath,
       fileOriginalName,
+      fileType, // VALOR ADICIONADO
       user_id,
     ];
     const { rows } = await db.query(query, values);
@@ -89,7 +94,6 @@ class Material {
   }
 
   /**
-   * NOVO MÉTODO
    * Apaga um material pelo seu ID, mas apenas se o user_id corresponder.
    * @param {number} materialId - O ID do material a ser apagado.
    * @param {number} userId - O ID do utilizador que está a tentar apagar.
@@ -101,8 +105,14 @@ class Material {
       WHERE id = $1 AND user_id = $2
     `;
     const result = await db.query(query, [materialId, userId]);
-    return result.rowCount; // Retorna 1 se apagou com sucesso, 0 se não encontrou ou não tinha permissão
+    return result.rowCount;
   }
+
+  /**
+   * Busca materiais com base em filtros de query string (search, disciplina).
+   * @param {object} filters - Filtros de busca (ex: { search: 'prova', disciplina: 'Matemática' }).
+   * @returns {Promise<Array>} Lista de materiais filtrados.
+   */
   static async find(filters = {}) {
     let baseQuery = `
       SELECT m.*, u.nome AS user_nome 
@@ -119,7 +129,6 @@ class Material {
       values.push(filters.disciplina);
     }
 
-    // Busca combinada: se search e orientador forem iguais, faz OR
     if (
       filters.search &&
       filters.orientador &&
