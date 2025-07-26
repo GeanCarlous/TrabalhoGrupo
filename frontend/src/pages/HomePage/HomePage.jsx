@@ -161,7 +161,7 @@ const HomePage = () => {
                         <form className="search-container" onSubmit={handleSearchSubmit}>
                             <input 
                                 type="text" 
-                                placeholder="Procurar por título ou professor..." 
+                                placeholder="Procurar por título" 
                                 className="search-input"
                                 value={searchInput}
                                 onChange={(e) => setSearchInput(e.target.value)}
