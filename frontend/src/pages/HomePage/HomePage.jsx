@@ -108,14 +108,32 @@ const HomePage = () => {
 
     return (
         <div className="home-page">
-            {/* Sidebar */}
+            {/* Sidebar Atualizada */}
             <div className="sidebar">
-                <div className="logo-container">
-                    <Link to="/perfil">
-                        <div className="logo">
-                            <svg viewBox="0 0 100 100" className="logo-icon"><circle cx="50" cy="50" r="45" fill="white"/><g fill="black" stroke="black" strokeWidth="2"><path d="M25 35 L35 45 L25 55 M45 35 L55 45 L45 55 M65 35 L75 45 L65 55"/><circle cx="30" cy="65" r="3"/><circle cx="50" cy="65" r="3"/><circle cx="70" cy="65" r="3"/></g></svg>
-                        </div>
-                    </Link>
+                <div className="logo-container" onClick={() => navigate("/perfil")}>
+                    <div className="logo">
+                        <svg
+                            viewBox="0 0 64 64"
+                            className="logo-icon"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <circle cx="32" cy="32" r="30" fill="#fff" />
+                            {/* Chapéu de formatura */}
+                            <rect x="20" y="16" width="24" height="8" rx="2" fill="#2563eb" />
+                            <polygon points="32,10 20,16 44,16" fill="#2563eb" />
+                            {/* Cabeça */}
+                            <circle cx="32" cy="36" r="10" fill="#4f46e5" />
+                            {/* Ombros */}
+                            <ellipse cx="32" cy="50" rx="14" ry="6" fill="#2563eb" />
+                            {/* Sorriso */}
+                            <path
+                                d="M28 39 Q32 43 36 39"
+                                stroke="#fff"
+                                strokeWidth="2"
+                                fill="none"
+                            />
+                        </svg>
+                    </div>
                 </div>
                 <nav className="nav-menu">
                     <Link to="/perfil" className={`nav-item ${activeNav === 'perfil' ? 'active' : ''}`} onClick={() => setActiveNav('perfil')}>

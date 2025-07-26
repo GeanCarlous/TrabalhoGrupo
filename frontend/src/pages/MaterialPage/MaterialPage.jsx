@@ -13,6 +13,7 @@ const MaterialPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [isDownloading, setIsDownloading] = useState(false);
+    const [activeNav, setActiveNav] = useState('acervo'); // Estado para a navegação
 
     useEffect(() => {
         if (!isAuthenticated) {
@@ -41,11 +42,6 @@ const MaterialPage = () => {
         fetchMaterial();
     }, [id, token, isAuthenticated, navigate]);
     
-    const handleLogout = () => {
-        logout();
-        navigate('/login');
-    };
-
     const handleDelete = async () => {
         const confirmed = window.confirm('Tem a certeza de que quer apagar este material? Esta ação não pode ser desfeita.');
         
@@ -67,6 +63,11 @@ const MaterialPage = () => {
                 alert(`Erro: ${err.message}`);
             }
         }
+    };
+
+    const handleLogout = () => {
+        logout();
+        navigate('/login');
     };
 
     const handleDownload = async () => {
@@ -95,6 +96,7 @@ const MaterialPage = () => {
         }
     };
 
+
     if (loading) {
         return <div className="material-page-status">A carregar material...</div>;
     }
@@ -112,20 +114,35 @@ const MaterialPage = () => {
 
     return (
         <div className="material-page">
+            {/* --- SIDEBAR ATUALIZADA --- */}
             <div className="sidebar">
-                <div className="logo-container">
-                    <Link to="/home">
-                        <div className="logo">
-                            <svg viewBox="0 0 100 100" className="logo-icon"><circle cx="50" cy="50" r="45" fill="white"/><g fill="black" stroke="black" strokeWidth="2"><path d="M25 35 L35 45 L25 55 M45 35 L55 45 L45 55 M65 35 L75 45 L65 55"/><circle cx="30" cy="65" r="3"/><circle cx="50" cy="65" r="3"/><circle cx="70" cy="65" r="3"/></g></svg>
-                        </div>
-                    </Link>
+                <div className="logo-container" onClick={() => navigate("/perfil")}>
+                    <div className="logo">
+                        <svg
+                            viewBox="0 0 64 64"
+                            className="logo-icon"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <circle cx="32" cy="32" r="30" fill="#fff" />
+                            <rect x="20" y="16" width="24" height="8" rx="2" fill="#2563eb" />
+                            <polygon points="32,10 20,16 44,16" fill="#2563eb" />
+                            <circle cx="32" cy="36" r="10" fill="#4f46e5" />
+                            <ellipse cx="32" cy="50" rx="14" ry="6" fill="#2563eb" />
+                            <path
+                                d="M28 39 Q32 43 36 39"
+                                stroke="#fff"
+                                strokeWidth="2"
+                                fill="none"
+                            />
+                        </svg>
+                    </div>
                 </div>
                 <nav className="nav-menu">
-                    <Link to="/perfil" className="nav-item">
+                    <Link to="/perfil" className={`nav-item ${activeNav === 'perfil' ? 'active' : ''}`} onClick={() => setActiveNav('perfil')}>
                         <svg className="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
                         <span>Perfil</span>
                     </Link>
-                    <Link to="/home" className="nav-item active">
+                    <Link to="/home" className={`nav-item ${activeNav === 'acervo' ? 'active' : ''}`} onClick={() => setActiveNav('acervo')}>
                         <svg className="nav-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h18v18H3V3zm16 16V5H5v14h14z"/><path d="M7 7h10v2H7V7zm0 4h10v2H7v-2zm0 4h7v2H7v-2z"/></svg>
                         <span>Acervo</span>
                     </Link>
