@@ -2,7 +2,7 @@
 
 const Orientador = require('../models/Orientador');
 
-// Função que já existia
+
 const getAll = async (req, res) => {
   try {
     const orientadores = await Orientador.getAll();
@@ -13,7 +13,7 @@ const getAll = async (req, res) => {
   }
 };
 
-// Nova função que estava faltando
+
 const getByDisciplina = async (req, res) => {
   try {
     const { disciplinaId } = req.params;
@@ -25,7 +25,7 @@ const getByDisciplina = async (req, res) => {
   }
 };
 
-// Exporta ambas as funções
+
 module.exports = {
   getAll,
   getByDisciplina,
