@@ -42,8 +42,8 @@ const MaterialPage = () => {
     }, [id, token, isAuthenticated, navigate]);
     
     const handleDelete = async () => {
-        const confirmed = window.confirm('Tem a certeza de que quer apagar este material? Esta ação não pode ser desfeita.');
-        
+        const confirmed = window.confirm('Tem certeza de que quer apagar este material? Esta ação não pode ser desfeita.');
+
         if (confirmed) {
             try {
                 const response = await fetch(`${process.env.REACT_APP_API_URL}/materials/${id}`, {
@@ -77,7 +77,7 @@ const MaterialPage = () => {
         try {
             const response = await fetch(material.filepath);
             if (!response.ok) {
-                throw new Error('Não foi possível aceder ao ficheiro para download.');
+                throw new Error('Não foi possível acessar o ficheiro para download.');
             }
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
@@ -113,11 +113,19 @@ const MaterialPage = () => {
 
     return (
         <div className="material-page">
+            {/* Sidebar Atualizada */}
             <div className="sidebar">
                 <div className="logo-container">
-                    <Link to="/home">
+                    <Link to="/perfil" className="logo-link">
                         <div className="logo">
-                            <svg viewBox="0 0 100 100" className="logo-icon"><circle cx="50" cy="50" r="45" fill="white"/><g fill="black" stroke="black" strokeWidth="2"><path d="M25 35 L35 45 L25 55 M45 35 L55 45 L45 55 M65 35 L75 45 L65 55"/><circle cx="30" cy="65" r="3"/><circle cx="50" cy="65" r="3"/><circle cx="70" cy="65" r="3"/></g></svg>
+                            <svg viewBox="0 0 64 64" className="logo-icon" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="32" cy="32" r="30" fill="#fff" />
+                                <rect x="20" y="16" width="24" height="8" rx="2" fill="#2563eb" />
+                                <polygon points="32,10 20,16 44,16" fill="#2563eb" />
+                                <circle cx="32" cy="36" r="10" fill="#4f46e5" />
+                                <ellipse cx="32" cy="50" rx="14" ry="6" fill="#2563eb" />
+                                <path d="M28 39 Q32 43 36 39" stroke="#fff" strokeWidth="2" fill="none" />
+                            </svg>
                         </div>
                     </Link>
                 </div>
