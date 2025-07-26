@@ -5,8 +5,6 @@ const db = require('../config/database');
 class Material {
   /**
    * Cria um novo material no banco de dados.
-   * @param {object} data - Os dados do material, incluindo user_id e fileType.
-   * @returns {Promise<object>} O material criado.
    */
   static async create(data) {
     const {
@@ -29,9 +27,8 @@ class Material {
   }
 
   /**
+   * MÉTODO DE PESQUISA CORRIGIDO E SIMPLIFICADO
    * Busca materiais com base em filtros de pesquisa (título OU orientador) e/ou disciplina.
-   * @param {object} filters - Objeto com os filtros (ex: { search: 'prova', disciplina: 'Cálculo' }).
-   * @returns {Promise<Array>} Uma lista de materiais filtrados.
    */
   static async find(filters = {}) {
     let baseQuery = `
@@ -44,13 +41,15 @@ class Material {
     const values = [];
     let paramIndex = 1;
 
+    // Adiciona condição de filtro por disciplina, se existir
     if (filters.disciplina) {
       conditions.push(`m.disciplina = $${paramIndex++}`);
       values.push(filters.disciplina);
     }
 
+    // Adiciona condição de pesquisa por título OU orientador, se existir
     if (filters.search) {
-      // A pesquisa verifica se o termo aparece no título OU no nome do orientador
+      // ILIKE faz uma pesquisa case-insensitive no PostgreSQL
       conditions.push(`(m.titulo ILIKE $${paramIndex} OR m.orientador ILIKE $${paramIndex})`);
       values.push(`%${filters.search}%`);
       paramIndex++;
@@ -67,9 +66,7 @@ class Material {
   }
 
   /**
-   * Busca um material específico pelo seu ID, juntamente com o nome do utilizador que o enviou.
-   * @param {number} id - O ID do material.
-   * @returns {Promise<object|undefined>} O objeto do material se encontrado, senão undefined.
+   * Busca um material específico pelo seu ID.
    */
   static async getById(id) {
     const query = `
@@ -83,10 +80,7 @@ class Material {
   }
 
   /**
-   * Apaga um material pelo seu ID, mas apenas se o user_id corresponder.
-   * @param {number} materialId - O ID do material a ser apagado.
-   * @param {number} userId - O ID do utilizador que está a tentar apagar.
-   * @returns {Promise<number>} O número de linhas apagadas (0 ou 1).
+   * Apaga um material pelo seu ID, verificando a permissão do utilizador.
    */
   static async deleteById(materialId, userId) {
     const query = `
